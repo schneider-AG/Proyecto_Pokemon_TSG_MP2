@@ -36,33 +36,39 @@ public class CatalogoCartas {
         List<Carta> cartas = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             cartas.add(crearCharmander());
+            cartas.add(crearCharmeleon());
             cartas.add(crearSquirtle());
+            cartas.add(crearWartortle());
             cartas.add(crearMagikarp());
-            cartas.add(crearMoltresEx());
-            cartas.add(crearArticunoEx());
-            cartas.add(new InvestigacionDelProfesor());
-            cartas.add(new Pocion());
             cartas.add(new PokeBall());
-            cartas.add(new Misty());
-            cartas.add(new TurboVelocidad());
         }
+        cartas.add(crearCharizard());
+        cartas.add(crearBlastoise());
+        cartas.add(crearGyarados());
+        cartas.add(crearMoltresEx());
+        cartas.add(new InvestigacionDelProfesor());
+        cartas.add(new Pocion());
+        cartas.add(new Misty());
+        cartas.add(new TurboVelocidad());
         return cartas;
     }
 
     private List<Carta> armarMazoElectricoPsiquico() {
         List<Carta> cartas = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            cartas.add(crearPikachu());
-            cartas.add(crearZapdosEx());
-            cartas.add(crearMewtwoEx());
-            cartas.add(crearJigglypuff());
-            cartas.add(crearSnorlax());
-            cartas.add(new InvestigacionDelProfesor());
-            cartas.add(new Pocion());
-            cartas.add(new PokeBall());
-            cartas.add(new Misty());
-            cartas.add(new TurboVelocidad());
-        }
+        cartas.add(crearPikachu());
+        cartas.add(crearRaichu());
+        cartas.add(crearJigglypuff());
+        cartas.add(crearWigglytuff());
+        cartas.add(crearMewtwoEx());
+        cartas.add(new InvestigacionDelProfesor());
+        cartas.add(new Pocion());
+        cartas.add(new PokeBall());
+    }
+        cartas.add(crearZapdosEx());
+        cartas.add(crearSnorlax());
+        cartas.add(new Misty());
+        cartas.add(new TurboVelocidad());
         return cartas;
     }
 
@@ -70,20 +76,123 @@ public class CatalogoCartas {
     private List<Carta> armarMazoCampeones() {
     List<Carta> cartas = new ArrayList<>();
     for (int i = 0; i < 2; i++) {
-        cartas.add(crearPikachu());
+         cartas.add(crearPikachu());
         cartas.add(crearCharmander());
         cartas.add(crearJigglypuff());
         cartas.add(crearMewtwoEx());
-        cartas.add(crearZapdosEx());
         cartas.add(new InvestigacionDelProfesor());
         cartas.add(new Pocion());
         cartas.add(new PokeBall());
-        cartas.add(new Misty());
-        cartas.add(new TurboVelocidad());
     }
-
+    cartas.add(crearRaichu());
+    cartas.add(crearCharmeleon());
+    cartas.add(crearWigglytuff());
+    cartas.add(crearZapdosEx());
+    cartas.add(new Misty());
+    cartas.add(new TurboVelocidad());
     return cartas;
 }
+
+private PokemonFase1 crearRaichu() {
+    PokemonFase1 p = new PokemonFase1(
+        "Raichu", 
+        TipoEnergia.ELECTRICO, 
+        (short)100, 
+        (short)100, 
+        (byte)1, 
+        "Pikachu");
+
+    p.agregarAtaque(new Ataque(
+        "Trueno", 
+        2, 
+        TipoEnergia.ELECTRICO, 
+        60));
+         return p;
+}
+private PokemonFase1 crearCharmeleon() {
+    PokemonFase1 p = new PokemonFase1(
+        "Charmeleon", 
+        TipoEnergia.FUEGO, 
+        (short)90, 
+        (short)90, 
+        (byte)2, 
+        "Charmander");
+    p.agregarAtaque(new Ataque(
+        "Garra Ignea",
+        2, 
+        TipoEnergia.FUEGO, 
+        50)); return p;
+}
+private PokemonFase2 crearCharizard() {
+    PokemonFase2 p = new PokemonFase2(
+        "Charizard", 
+        TipoEnergia.FUEGO, 
+        (short)150, 
+        (short)150, 
+        (byte)2, 
+        "Charmeleon");
+    p.agregarAtaque(new Ataque(
+        "Giro Fuego", 
+        4, 
+        TipoEnergia.FUEGO, 
+        120)); return p;
+}
+private PokemonFase1 crearWartortle() {
+    PokemonFase1 p = new PokemonFase1(
+        "Wartortle", 
+        TipoEnergia.AGUA, 
+        (short)80, 
+        (short)80, 
+        (byte)1, 
+        "Squirtle");
+    p.agregarAtaque(new Ataque(
+        "Salpicadura", 
+        2, 
+        TipoEnergia.AGUA, 
+        40)); return p;
+}
+private PokemonFase2 crearBlastoise() {
+    PokemonFase2 p = new PokemonFase2("Blastoise", 
+    TipoEnergia.AGUA,
+     (short)150,
+      (short)150,
+       (byte)3,
+        "Wartortle");
+    p.agregarAtaque(new Ataque(
+        "Hidrobomba",
+         3, 
+         TipoEnergia.AGUA,
+          100)); return p;
+}
+private PokemonFase1 crearWigglytuff() {
+    PokemonFase1 p = new PokemonFase1(
+        "Wigglytuff",
+         TipoEnergia.INCOLORO, 
+         (short)110,
+          (short)110, 
+          (byte)2,
+           "Jigglypuff");
+    p.agregarAtaque(new Ataque(
+        "Bofeton", 
+        2,
+         TipoEnergia.INCOLORO, 
+         50)); return p;
+}
+private PokemonFase1 crearGyarados() {
+    PokemonFase1 p = new PokemonFase1(
+        "Gyarados",
+         TipoEnergia.AGUA, 
+         (short)150,
+          (short)150, 
+          (byte)4,
+           "Magikarp");
+    p.agregarAtaque(new Ataque(
+        "Hiperrayo",
+         4,
+          TipoEnergia.AGUA,
+           100)); return p;
+}
+
 
 private PokemonBasico crearCharmander() {
 

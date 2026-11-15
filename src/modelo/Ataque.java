@@ -1,3 +1,4 @@
+package modelo;
 public class Ataque {
     
     private String nombre;

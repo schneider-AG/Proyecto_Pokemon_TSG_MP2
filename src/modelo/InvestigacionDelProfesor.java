@@ -1,3 +1,4 @@
+package modelo;
 public class InvestigacionDelProfesor extends Soporte {
 
     public InvestigacionDelProfesor() {

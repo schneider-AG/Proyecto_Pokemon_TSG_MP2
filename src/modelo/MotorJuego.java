@@ -25,7 +25,7 @@ public class MotorJuego {
         this.turno = 1;
     }
 
-public void iniciarPartida() {
+public boolean iniciarPartida() {
 
     jugador1.robarManoInicial();
     jugador2.robarManoInicial();
@@ -33,14 +33,20 @@ public void iniciarPartida() {
     colocarPokemonInicial(jugador1);
     colocarPokemonInicial(jugador2);
 
+    if (jugador1.getCampo().getPokemonActivo() == null
+            || jugador2.getCampo().getPokemonActivo() == null) {
+        System.out.println("No se puede iniciar: ambos jugadores necesitan un Pokemon basico activo.");
+        return false;
+    }
+
     jugador1.generarEnergiaTurno();
     jugador2.generarEnergiaTurno();
 
     System.out.println("La partida ha comenzado");
+    return true;
 }
 
-    // El jugador elige obligatoriamente 1 Pokémon como Activo. Opcionalmente
-    // puede colocar hasta 2 básicos más en la Banca. Solo puede haber 1 Activo.
+
     private void colocarPokemonInicial(Jugador jugador) {
 
         List<Carta> mano = jugador.getMano();
@@ -64,7 +70,7 @@ public void iniciarPartida() {
         jugador.colocarPokemonEnJuego(activo);
         System.out.println(activo.getNombre() + " es el Pokémon activo.");
 
-        // 2. Opcionalmente colocar hasta 2 básicos más en la Banca
+        
         while (jugador.getCampo().getBanco().size() < 2) {
             List<Carta> restantes = new ArrayList<>();
             for (Carta c : jugador.getMano()) {
@@ -130,7 +136,7 @@ private void ejecutarTurno(
         switch (accion) {
 
     case 1: {
-        // Adjuntar 1 energía del turno al Activo o a un Pokémon de la Banca
+        
         List<Pokemon> propios = new ArrayList<>();
         Pokemon activoAux = jugadorActual.getCampo().getPokemonActivo();
         if (activoAux != null) {
@@ -491,6 +497,10 @@ case 5:
 
         break;
 
+    case 7:
+        evolucionarPokemon(jugadorActual);
+        break;
+
     default:
 
         System.out.println(
@@ -512,6 +522,52 @@ case 5:
     }
 
 }
+
+private void evolucionarPokemon(Jugador jugador) {
+    List<Carta> evoluciones = new ArrayList<>();
+    for (Carta carta : jugador.getMano()) {
+        if (carta instanceof PokemonEvolucion) evoluciones.add(carta);
+    }
+    if (evoluciones.isEmpty()) {
+        System.out.println("No tienes cartas de evolucion en la mano.");
+        return;
+    }
+    for (int i = 0; i < evoluciones.size(); i++) {
+        System.out.println((i + 1) + ". " + evoluciones.get(i).getNombre());
+    }
+    int opcion = consola.elegirEntrenador();
+    if (opcion < 1 || opcion > evoluciones.size()) {
+        System.out.println("Seleccion invalida.");
+        return;
+    }
+    Carta carta = evoluciones.get(opcion - 1);
+    List<Pokemon> propios = new ArrayList<>();
+    Pokemon activo = jugador.getCampo().getPokemonActivo();
+    if (activo != null) propios.add(activo);
+    propios.addAll(jugador.getCampo().getBanco());
+    if (propios.isEmpty()) {
+        System.out.println("No tienes Pokemon en juego.");
+        return;
+    }
+    for (int i = 0; i < propios.size(); i++) {
+        Pokemon pokemon = propios.get(i);
+        System.out.println((i + 1) + ". " + pokemon.getNombre()
+            + " (" + pokemon.getPsActual() + "/" + pokemon.getPsMaximo() + " PS)");
+    }
+    int opcionPokemon = consola.elegirPokemon();
+    if (opcionPokemon < 1 || opcionPokemon > propios.size()) {
+        System.out.println("Seleccion invalida.");
+        return;
+    }
+    Pokemon objetivo = propios.get(opcionPokemon - 1);
+    String motivo = jugador.motivoNoEvolucion(objetivo, carta);
+    if (motivo != null) {
+        System.out.println(motivo);
+    } else if (jugador.evolucionar(carta, objetivo)) {
+        System.out.println(objetivo.getNombre() + " evoluciono a " + carta.getNombre() + ".");
+    }
+}
+
 public boolean verificarGanador() {
 
     if (jugador1.gano()) {
@@ -534,6 +590,11 @@ public boolean verificarGanador() {
 }
 
 private void anunciarGanador() {
+
+    if (!jugador1.tienePokemonEnJuego() && !jugador2.tienePokemonEnJuego()) {
+        System.out.println("La partida no tiene ganador: ninguno de los jugadores tiene Pokemon en juego.");
+        return;
+    }
 
     if (jugador1.gano() ||
         !jugador2.tienePokemonEnJuego()) {

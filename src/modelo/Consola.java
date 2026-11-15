@@ -74,7 +74,7 @@ public class Consola {
         System.out.println("  PREMIOS:  " + j.getPuntosPremio() + " / 3");
     }
 
-    // La banca siempre muestra 2 espacios; los vacios como [Espacio disponible].
+    
     private void imprimirBanca(List<Pokemon> banco) {
         for (int i = 0; i < 2; i++) {
             String prefijo = (i == 0) ? "  BANCA:    " : "            ";
@@ -111,8 +111,7 @@ public class Consola {
         return "SIN ENERGIA";
     }
 
-    // Muestra el tipo y la cantidad de cada energia adjunta.
-    // Si el Pokemon no tiene energias, devuelve "Sin energia".
+   
     private String textoEnergias(List<TipoEnergia> energias) {
         if (energias == null || energias.isEmpty()) {
             return "Sin energia";
@@ -140,7 +139,7 @@ public class Consola {
         return texto.trim();
     }
 
-    // Devuelve el nombre del tipo de energia en formato bonito.
+    
     private String nombreTipo(TipoEnergia t) {
         switch (t) {
             case FUEGO: return "Fuego";
@@ -164,11 +163,12 @@ public class Consola {
         System.out.println("  (4) Retirar Pokemon activo");
         System.out.println("  (5) Atacar");
         System.out.println("  (6) Pasar turno");
+        System.out.println("  (7) Evolucionar Pokemon");
         System.out.println(guion);
         int opcion;
         do {
             opcion = leerEntero("Opcion: ");
-        } while (opcion < 1 || opcion > 6);
+        } while (opcion < 1 || opcion > 7);
         return opcion;
     }
 
@@ -184,7 +184,7 @@ public class Consola {
         return leerEntero("Elija un Pokemon (numero): ");
     }
 
-    // Menu bonito para elegir el Pokemon activo al inicio de la partida.
+    
     public int elegirPokemonActivo(List<Carta> basicos, Jugador jugador) {
         String igual = linea('=', 70);
         String guion = linea('-', 70);
@@ -208,8 +208,7 @@ public class Consola {
         return opcion;
     }
 
-    // Menu bonito para colocar un Pokémon adicional en la banca.
-    // Devuelve 0 si no quiere colocar más, o 1..n para elegir uno.
+    
     public int elegirPokemonBanca(List<Carta> restantes) {
         String igual = linea('=', 70);
         String guion = linea('-', 70);
@@ -242,7 +241,7 @@ public class Consola {
         System.out.println(igual);
     }
 
-    // Genera una linea de 'n' caracteres repetidos (para los bordes).
+   
     private String linea(char c, int n) {
         String s = "";
         for (int i = 0; i < n; i++) {
@@ -251,8 +250,7 @@ public class Consola {
         return s;
     }
 
-    // Lee un entero por teclado. Si el usuario ingresa letras, las descarta
-    // y vuelve a pedir el dato para que el programa no se caiga.
+    
     private int leerEntero(String mensaje) {
         System.out.print(mensaje);
         while (!this.scanner.hasNextInt()) {

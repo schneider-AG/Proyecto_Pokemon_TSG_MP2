@@ -24,15 +24,15 @@ public class App {
         int mazoJugador2 =
             consola.elegirMazo(nombreJugador2);
 
-        Mazo mazo1 =
-            catalogo.crearMazoPredefinido(
-                mazoJugador1
-            );
-
-        Mazo mazo2 =
-            catalogo.crearMazoPredefinido(
-                mazoJugador2
-            );
+        Mazo mazo1;
+        Mazo mazo2;
+        try {
+            mazo1 = catalogo.crearMazoPredefinido(mazoJugador1);
+            mazo2 = catalogo.crearMazoPredefinido(mazoJugador2);
+        } catch (IllegalArgumentException e) {
+            System.out.println("No se pudo iniciar la partida: " + e.getMessage());
+            return;
+        }
 
         List<TipoEnergia> energias =
             new ArrayList<>();
@@ -69,7 +69,9 @@ public class App {
                 consola
             );
 
-        motor.iniciarPartida();
+        if (!motor.iniciarPartida()) {
+            return;
+        }
 
         motor.ejecutarPartida();
     }

@@ -18,6 +18,7 @@ public class Jugador {
     private boolean soporteUsadoEsteTurno;
     private int turnosJugados;
     private int turnoGlobal;
+    private boolean turboVelocidadUsadoEsteTurno;
 
     public Jugador(String nombre, Mazo mazo, ZonaEnergia zonaEnergia) {
         if (nombre == null || nombre.isEmpty()) {
@@ -35,12 +36,12 @@ public class Jugador {
         this.puedeAtacarEsteTurno = true;
     }
 
-    // Inicia el turno. Pasar false para el primer turno del primer jugador,
-    // que no puede atacar.
+    
     public void iniciarTurno(boolean puedeAtacar, int turnoGlobal) {
         this.puedeAtacarEsteTurno = puedeAtacar;
         this.yaAtacoEsteTurno = false;
         this.soporteUsadoEsteTurno = false;
+        this.turboVelocidadUsadoEsteTurno = false;
         this.turnoGlobal = turnoGlobal;
         this.turnosJugados++;
     }
@@ -92,7 +93,7 @@ public class Jugador {
         return true;
     }
 
-    // Colocar un pokemon basico de la mano al campo (activo o banco)
+    
     public boolean colocarPokemonEnJuego(Carta carta) {
         if (carta == null || !this.mano.contains(carta)) {
             return false;
@@ -111,12 +112,12 @@ public class Jugador {
         } else {
             return false;
         }
-        pokemon.setTurnoEntrada(this.turnoGlobal);
+        pokemon.setTurnoEntrada(this.turnosJugados);
         this.mano.remove(carta);
         return true;
     }
 
-    // Retira al activo pagando su costo de retirada y promueve a uno del banco
+    
     public boolean retirarPokemonActivo(Pokemon nuevoActivo) {
         Pokemon activo = this.campo.getPokemonActivo();
         if (activo == null || nuevoActivo == null) {
@@ -125,7 +126,8 @@ public class Jugador {
         if (!this.campo.getBanco().contains(nuevoActivo)) {
             return false;
         }
-        int costo = activo.getCostoRetirada();
+        int costo = Math.max(0, activo.getCostoRetirada()
+            - (this.turboVelocidadUsadoEsteTurno ? 1 : 0));
         List<TipoEnergia> energias = activo.getEnergias();
         if (energias.size() < costo) {
             return false;
@@ -139,7 +141,7 @@ public class Jugador {
         return true;
     }
 
-    // Atacar al oponente, una sola vez por turno
+   
     public boolean atacar(Ataque ataque, Jugador oponente) {
         if (!this.puedeAtacarEsteTurno || this.yaAtacoEsteTurno) {
             return false;
@@ -163,7 +165,7 @@ public class Jugador {
         return true;
     }
 
-    // Sube el primer pokemon del banco a activo. Si no hay devuelve false.
+   
     public boolean promoverDesdeBanco() {
         if (this.campo.getPokemonActivo() != null) {
             return true;
@@ -176,13 +178,25 @@ public class Jugador {
         return true;
     }
 
-    // Soportes: maximo 1 por turno
+   
     public boolean puedeJugarSoporte() {
         return !this.soporteUsadoEsteTurno;
     }
 
     public void registrarSoporte() {
         this.soporteUsadoEsteTurno = true;
+    }
+
+    public boolean puedeUsarTurboVelocidad() {
+        return !this.turboVelocidadUsadoEsteTurno;
+    }
+
+    public boolean activarTurboVelocidad() {
+        if (!puedeUsarTurboVelocidad() || this.campo.getPokemonActivo() == null) {
+            return false;
+        }
+        this.turboVelocidadUsadoEsteTurno = true;
+        return true;
     }
 
     // Hay pokemon en juego si tiene activo o algo en el banco
@@ -242,7 +256,7 @@ public class Jugador {
         return this.yaAtacoEsteTurno;
     }
 
-    public String validarEvolucion(Carta carta, Pokemon objetivo) {
+    public String motivoNoEvolucion(Pokemon objetivo, Carta carta) {
 
     if (!(carta instanceof PokemonEvolucion) || !mano.contains(carta)){
         return "Esa carta no es una evolución de tu mano";
@@ -256,16 +270,20 @@ public class Jugador {
     if (turnosJugados <= 1){
         return "No puedes evolucionar en tu primer turno";
     }
-    if (objetivo.getTurnoEntrada() == turnoGlobal){
+    if (objetivo.getTurnoEntrada() == turnosJugados){
         return objetivo.getNombre() + " entró en juego este turno";
     }
-    if (objetivo.getTurnoUltimaEvolucion() == turnoGlobal){
+    if (objetivo.getTurnoUltimaEvolucion() == turnosJugados){
         return objetivo.getNombre() + " ya evolucionó este turno";
     }
-    if (!evolucion.puedeEvolucionar(objetivo)){
-        return evolucion.getNombre() + " no evoluciona de " + objetivo.getNombre();
+    if (!objetivo.getNombre().equals(evolucion.getEvolucionaDe())){
+        return evolucion.getNombre() + " evoluciona de " + evolucion.getEvolucionaDe();
     }
     return null;
+    }
+
+    public String validarEvolucion(Carta carta, Pokemon objetivo) {
+        return motivoNoEvolucion(objetivo, carta);
     }
 
     public boolean evolucionar(Carta carta, Pokemon objetivo) {
@@ -276,9 +294,10 @@ public class Jugador {
 
         PokemonEvolucion evolucion = (PokemonEvolucion) carta;
 
-        evolucion.heredarEstado(objetivo);
-        evolucion.setTurnoUltimaEvolucion(turnoGlobal);
-        campo.reemplazar(objetivo, evolucion);
+        evolucion.heredarDe(objetivo);
+        evolucion.setTurnoEntrada(objetivo.getTurnoEntrada());
+        evolucion.setTurnoUltimaEvolucion(turnosJugados);
+        if (!campo.reemplazar(objetivo, evolucion)) return false;
         mano.remove(carta);
         return true;
     } 

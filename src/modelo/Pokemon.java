@@ -150,10 +150,15 @@ public abstract class Pokemon extends Carta{
     public abstract String getEtapa();
 
     public void heredarEstado(Pokemon anterior) {
-    int danio = anterior.psMaximo - anterior.psActual;
-    this.psActual = (short) (this.psMaximo - danio);  
-    this.energias.addAll(anterior.energias);
+    heredarDe(anterior);
     this.turnoEntrada = anterior.turnoEntrada;
+    }
+
+
+    public void heredarDe(Pokemon anterior) {
+        int danio = anterior.psMaximo - anterior.psActual;
+        this.energias.addAll(anterior.energias);
+        this.psActual = (short) Math.max(0, this.psMaximo - danio);
     }
 
     public int getTurnoEntrada() {

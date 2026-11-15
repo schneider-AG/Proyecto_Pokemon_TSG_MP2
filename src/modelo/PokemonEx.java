@@ -16,4 +16,9 @@ public class PokemonEx extends Pokemon{
         return true; // los pokemon-ex tambien son basicos
     }
 
+    @Override
+    public String getEtapa() {
+        return "Basico Ex";
+    }
+
 }

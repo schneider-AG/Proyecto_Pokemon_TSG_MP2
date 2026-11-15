@@ -16,5 +16,10 @@ public class PokemonBasico extends Pokemon{
         return true;
     }
 
+        @Override
+    public String getEtapa() {
+        return "Basico";
+    }
+
     
 }

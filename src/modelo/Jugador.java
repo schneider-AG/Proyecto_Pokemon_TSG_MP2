@@ -16,6 +16,8 @@ public class Jugador {
     private boolean puedeAtacarEsteTurno;
     private boolean yaAtacoEsteTurno;
     private boolean soporteUsadoEsteTurno;
+    private int turnosJugados;
+    private int turnoGlobal;
 
     public Jugador(String nombre, Mazo mazo, ZonaEnergia zonaEnergia) {
         if (nombre == null || nombre.isEmpty()) {
@@ -35,14 +37,16 @@ public class Jugador {
 
     // Inicia el turno. Pasar false para el primer turno del primer jugador,
     // que no puede atacar.
-    public void iniciarTurno(boolean puedeAtacar) {
+    public void iniciarTurno(boolean puedeAtacar, int turnoGlobal) {
         this.puedeAtacarEsteTurno = puedeAtacar;
         this.yaAtacoEsteTurno = false;
         this.soporteUsadoEsteTurno = false;
+        this.turnoGlobal = turnoGlobal;
+        this.turnosJugados++;
     }
 
     public void iniciarTurno() {
-        iniciarTurno(true);
+        iniciarTurno(true, turnoGlobal);
     }
 
     // Robar cartas
@@ -107,6 +111,7 @@ public class Jugador {
         } else {
             return false;
         }
+        pokemon.setTurnoEntrada(this.turnoGlobal);
         this.mano.remove(carta);
         return true;
     }
@@ -229,7 +234,53 @@ public class Jugador {
         return this.puntosPremio;
     }
 
+    public int getTurnosJugados() {
+        return turnosJugados;
+    }
+
     public boolean yaAtacoEsteTurno() {
         return this.yaAtacoEsteTurno;
     }
+
+    public String validarEvolucion(Carta carta, Pokemon objetivo) {
+
+    if (!(carta instanceof PokemonEvolucion) || !mano.contains(carta)){
+        return "Esa carta no es una evolución de tu mano";
+    }
+
+    PokemonEvolucion evolucion = (PokemonEvolucion) carta;
+
+    if (!esPokemonPropio(objetivo)){
+        return "Elige un Pokémon tuyo en juego";
+    }
+    if (turnosJugados <= 1){
+        return "No puedes evolucionar en tu primer turno";
+    }
+    if (objetivo.getTurnoEntrada() == turnoGlobal){
+        return objetivo.getNombre() + " entró en juego este turno";
+    }
+    if (objetivo.getTurnoUltimaEvolucion() == turnoGlobal){
+        return objetivo.getNombre() + " ya evolucionó este turno";
+    }
+    if (!evolucion.puedeEvolucionar(objetivo)){
+        return evolucion.getNombre() + " no evoluciona de " + objetivo.getNombre();
+    }
+    return null;
+    }
+
+    public boolean evolucionar(Carta carta, Pokemon objetivo) {
+
+        if (validarEvolucion(carta, objetivo) != null){
+            return false;
+        }
+
+        PokemonEvolucion evolucion = (PokemonEvolucion) carta;
+
+        evolucion.heredarEstado(objetivo);
+        evolucion.setTurnoUltimaEvolucion(turnoGlobal);
+        campo.reemplazar(objetivo, evolucion);
+        mano.remove(carta);
+        return true;
+    } 
+
 }

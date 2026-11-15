@@ -42,4 +42,16 @@ public class CampoDeBatalla {
         return this.pokemonActivo != null;
     }
 
+    public void reemplazar(Pokemon viejo, Pokemon nuevo) {
+    if (pokemonActivo == viejo) {
+        pokemonActivo = nuevo;
+        return;
+    }
+    int i = banco.indexOf(viejo);
+    if (i >= 0){
+        banco.set(i, nuevo);
+    }
+    
+}
+
 }

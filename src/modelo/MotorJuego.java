@@ -10,6 +10,7 @@ public class MotorJuego {
     private Consola consola;
 
     private int turno;
+    private int turnoGlobal = 1;
 
     public MotorJuego(
         Jugador jugador1,

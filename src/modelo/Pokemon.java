@@ -3,12 +3,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Pokemon extends Carta{
-
     private TipoEnergia tipo;
     private short psMaximo, psActual;
     private byte costoRetirada;
     private List<Ataque> ataques;
     private List<TipoEnergia> energias;
+    private int turnoEntrada;
+    private int turnoUltimaEvolucion = -1;
 
     public Pokemon(String nombre, TipoEnergia tipo, short psMaximo, short psActual, byte costoRetirada) {
         super(nombre);
@@ -145,5 +146,30 @@ public abstract class Pokemon extends Carta{
     }
     
     public abstract byte getPuntosPremio();
-    
+
+    public abstract String getEtapa();
+
+    public void heredarEstado(Pokemon anterior) {
+    int danio = anterior.psMaximo - anterior.psActual;
+    this.psActual = (short) (this.psMaximo - danio);  
+    this.energias.addAll(anterior.energias);
+    this.turnoEntrada = anterior.turnoEntrada;
+    }
+
+    public int getTurnoEntrada() {
+        return turnoEntrada;
+    }
+
+    public void setTurnoEntrada(int turnoEntrada) {
+        this.turnoEntrada = turnoEntrada;
+    }
+
+    public int getTurnoUltimaEvolucion() {
+        return turnoUltimaEvolucion;
+    }
+
+    public void setTurnoUltimaEvolucion(int turnoUltimaEvolucion) {
+        this.turnoUltimaEvolucion = turnoUltimaEvolucion;
+    }
+
 }

@@ -12,7 +12,8 @@ public class TurboVelocidad extends Objeto {
     public Boolean puedeActivar(Jugador jugador) {
 
         return jugador != null &&
-               jugador.getCampo().getPokemonActivo() != null;
+               jugador.getCampo().getPokemonActivo() != null &&
+               jugador.puedeUsarTurboVelocidad();
     }
 
     @Override
@@ -22,23 +23,10 @@ public class TurboVelocidad extends Objeto {
             return null;
         }
 
-        Pokemon activo =
-            jugador.getCampo().getPokemonActivo();
-
-        byte costoActual =
-            activo.getCostoRetirada();
-
-        if (costoActual > 0) {
-
-            activo.setCostoRetirada(
-                (byte)(costoActual - 1)
-            );
-
-            System.out.println(
-                "Turbo Velocidad redujo el costo de retirada de "
-                + activo.getNombre()
-            );
-        }
+        Pokemon activo = jugador.getCampo().getPokemonActivo();
+        jugador.activarTurboVelocidad();
+        System.out.println("Turbo Velocidad redujo en 1 la retirada de " + activo.getNombre()
+            + " durante este turno.");
 
         return null;
     }

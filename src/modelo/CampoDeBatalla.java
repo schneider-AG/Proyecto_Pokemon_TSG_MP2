@@ -27,7 +27,7 @@ public class CampoDeBatalla {
     }
 
     public boolean agregarABanco(Pokemon pokemon) {
-        if( pokemon != null && banco.size() < 3){
+        if( pokemon != null && banco.size() < 2){
             banco.add(pokemon);
             return true;
         }
@@ -42,16 +42,18 @@ public class CampoDeBatalla {
         return this.pokemonActivo != null;
     }
 
-    public void reemplazar(Pokemon viejo, Pokemon nuevo) {
+    public boolean reemplazar(Pokemon viejo, Pokemon nuevo) {
+    if (viejo == null || nuevo == null) return false;
     if (pokemonActivo == viejo) {
         pokemonActivo = nuevo;
-        return;
+        return true;
     }
     int i = banco.indexOf(viejo);
     if (i >= 0){
         banco.set(i, nuevo);
+        return true;
     }
-    
+    return false;
 }
 
 }

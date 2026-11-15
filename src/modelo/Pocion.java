@@ -1,3 +1,4 @@
+package modelo;
 public class Pocion extends Objeto {
 
     public Pocion() {

@@ -1,19 +1,19 @@
-public class PokemonBasico extends Pokemon{
+package modelo;
+public class PokemonEx extends Pokemon{
 
-    public PokemonBasico(String nombre, TipoEnergia tipo, short psMaximo, short psActual, 
+    public PokemonEx(String nombre, TipoEnergia tipo, short psMaximo, short psActual,
         byte costoRetirada) {
         super(nombre, tipo, psMaximo, psActual, costoRetirada);
     }
 
     @Override
     public byte getPuntosPremio() {
-        return 1;
+        return 2;
     }
 
     @Override
     public Boolean esPokemonBasico() {
-        return true;
+        return true; // los pokemon-ex tambien son basicos
     }
 
-    
 }

@@ -1,3 +1,4 @@
+package modelo;
 public class TurboVelocidad extends Objeto {
 
     public TurboVelocidad() {

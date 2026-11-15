@@ -1,3 +1,4 @@
+package modelo;
 public class Misty extends Soporte {
 
     public Misty() {

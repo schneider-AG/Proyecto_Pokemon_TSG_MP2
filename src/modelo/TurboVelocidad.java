@@ -12,8 +12,8 @@ public class TurboVelocidad extends Objeto {
     public Boolean puedeActivar(Jugador jugador) {
 
         return jugador != null &&
-               jugador.getCampo().getPokemonActivo() != null &&
-               jugador.puedeUsarTurboVelocidad();
+            jugador.getCampo().getPokemonActivo() != null &&
+            jugador.puedeUsarTurboVelocidad();
     }
 
     @Override

@@ -141,7 +141,6 @@ public class Jugador {
         return true;
     }
 
-   
     public boolean atacar(Ataque ataque, Jugador oponente) {
         if (!this.puedeAtacarEsteTurno || this.yaAtacoEsteTurno) {
             return false;
@@ -165,7 +164,7 @@ public class Jugador {
         return true;
     }
 
-   
+
     public boolean promoverDesdeBanco() {
         if (this.campo.getPokemonActivo() != null) {
             return true;
@@ -178,7 +177,7 @@ public class Jugador {
         return true;
     }
 
-   
+
     public boolean puedeJugarSoporte() {
         return !this.soporteUsadoEsteTurno;
     }

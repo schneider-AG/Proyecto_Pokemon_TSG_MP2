@@ -76,7 +76,7 @@ public class CatalogoCartas {
     private List<Carta> armarMazoCampeones() {
     List<Carta> cartas = new ArrayList<>();
     for (int i = 0; i < 2; i++) {
-         cartas.add(crearPikachu());
+        cartas.add(crearPikachu());
         cartas.add(crearCharmander());
         cartas.add(crearJigglypuff());
         cartas.add(crearMewtwoEx());
@@ -107,7 +107,7 @@ private PokemonFase1 crearRaichu() {
         2, 
         TipoEnergia.ELECTRICO, 
         60));
-         return p;
+        return p;
 }
 private PokemonFase1 crearCharmeleon() {
     PokemonFase1 p = new PokemonFase1(
@@ -154,43 +154,43 @@ private PokemonFase1 crearWartortle() {
 private PokemonFase2 crearBlastoise() {
     PokemonFase2 p = new PokemonFase2("Blastoise", 
     TipoEnergia.AGUA,
-     (short)150,
-      (short)150,
-       (byte)3,
+    (short)150,
+    (short)150,
+    (byte)3,
         "Wartortle");
     p.agregarAtaque(new Ataque(
         "Hidrobomba",
-         3, 
-         TipoEnergia.AGUA,
-          100)); return p;
+        3, 
+        TipoEnergia.AGUA,
+        100)); return p;
 }
 private PokemonFase1 crearWigglytuff() {
     PokemonFase1 p = new PokemonFase1(
         "Wigglytuff",
-         TipoEnergia.INCOLORO, 
-         (short)110,
-          (short)110, 
-          (byte)2,
-           "Jigglypuff");
+        TipoEnergia.INCOLORO, 
+        (short)110,
+        (short)110, 
+        (byte)2,
+        "Jigglypuff");
     p.agregarAtaque(new Ataque(
         "Bofeton", 
         2,
-         TipoEnergia.INCOLORO, 
-         50)); return p;
+        TipoEnergia.INCOLORO, 
+        50)); return p;
 }
 private PokemonFase1 crearGyarados() {
     PokemonFase1 p = new PokemonFase1(
         "Gyarados",
-         TipoEnergia.AGUA, 
-         (short)150,
-          (short)150, 
-          (byte)4,
-           "Magikarp");
+        TipoEnergia.AGUA, 
+        (short)150,
+        (short)150, 
+        (byte)4,
+        "Magikarp");
     p.agregarAtaque(new Ataque(
         "Hiperrayo",
-         4,
-          TipoEnergia.AGUA,
-           100)); return p;
+        4,
+        TipoEnergia.AGUA,
+        100)); return p;
 }
 
 

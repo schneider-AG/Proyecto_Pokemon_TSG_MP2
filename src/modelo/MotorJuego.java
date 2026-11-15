@@ -248,7 +248,7 @@ private void ejecutarTurno(
             contador++;
         }
     }
-     
+    
     break;
 
 case 3:

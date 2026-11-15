@@ -20,16 +20,16 @@ public class Mazo {
 
     public Mazo(List<Carta> cartas, List<TipoEnergia> tiposDeEnergias) {
         if (cartas == null || !cumpleReglas(cartas)) {
-            System.out.println("Mazo invalido: se requieren " + TAMANO + " cartas, maximo "
-                + MAX_COPIAS + " copias por carta y minimo " + MIN_BASICOS + " basicos");
+            throw new IllegalArgumentException("Mazo invalido: debe tener " + TAMANO
+                + " cartas, maximo " + MAX_COPIAS + " copias por carta y minimo "
+                + MIN_BASICOS + " Pokemon basicos.");
         }
-        List<Carta> base = cartas == null ? new ArrayList<>() : cartas;
-        this.composicion = new ArrayList<>(base);
-        this.cartas = new ArrayList<>(base);
+        this.composicion = new ArrayList<>(cartas);
+        this.cartas = new ArrayList<>(cartas);
 
         if (!tiposEnergiaValido(tiposDeEnergias)) {
         System.out.println("Mazo invalido, se generaran energias por defecto");
-        this.tiposEnergia = tiposPorDefecto(base);
+        this.tiposEnergia = tiposPorDefecto(cartas);
         } else{
             this.tiposEnergia = new ArrayList<>(tiposDeEnergias);
         }

@@ -10,7 +10,12 @@ public class MotorJuego {
     private Consola consola;
 
     private int turno;
+
     private int turnoGlobal = 1;
+
+    private Jugador ganador;
+
+    private CondicionVictoria condicion;
 
     public MotorJuego(
         Jugador jugador1,
@@ -114,11 +119,14 @@ private void ejecutarTurno(
     Jugador rival
 ) {
 
-    jugadorActual.iniciarTurno();
+jugadorActual.iniciarTurno();
 
-    jugadorActual.robarCarta();
+if (jugadorActual.robarCarta() == null) {
+    registrarVictoria(rival, CondicionVictoria.MAZO_VACIO);
+    return;
+}
 
-    jugadorActual.generarEnergiaTurno();
+jugadorActual.generarEnergiaTurno();
 
     boolean terminarTurno = false;
 
@@ -568,47 +576,36 @@ private void evolucionarPokemon(Jugador jugador) {
     }
 }
 
+private void registrarVictoria(Jugador ganador, CondicionVictoria condicion) {
+    this.ganador = ganador;
+    this.condicion = condicion;
+}
+
 public boolean verificarGanador() {
-
+    if (ganador != null) {
+        return true;
+    }
     if (jugador1.gano()) {
+        registrarVictoria(jugador1, CondicionVictoria.PUNTOS_DE_PREMIO);
         return true;
     }
-
     if (jugador2.gano()) {
+        registrarVictoria(jugador2, CondicionVictoria.PUNTOS_DE_PREMIO);
         return true;
     }
-
     if (!jugador1.tienePokemonEnJuego()) {
+        registrarVictoria(jugador2, CondicionVictoria.SIN_POKEMON);
         return true;
     }
-
     if (!jugador2.tienePokemonEnJuego()) {
+        registrarVictoria(jugador1, CondicionVictoria.SIN_POKEMON);
         return true;
     }
-
     return false;
 }
 
 private void anunciarGanador() {
-
-    if (!jugador1.tienePokemonEnJuego() && !jugador2.tienePokemonEnJuego()) {
-        System.out.println("La partida no tiene ganador: ninguno de los jugadores tiene Pokemon en juego.");
-        return;
-    }
-
-    if (jugador1.gano() ||
-        !jugador2.tienePokemonEnJuego()) {
-
-        consola.anunciarGanador(
-            jugador1.getNombre()
-        );
-
-        return;
-    }
-
-    consola.anunciarGanador(
-        jugador2.getNombre()
-    );
+    consola.anunciarGanador(ganador.getNombre(), condicion);
 }
 
 private void cambiarTurno() {
@@ -650,4 +647,13 @@ public Jugador getJugador2() {
 public int getTurno() {
     return turno;
 }
+
+public Jugador getGanador() {
+    return ganador;
+}
+
+public CondicionVictoria getCondicion() {
+    return condicion;
+}
+
 }

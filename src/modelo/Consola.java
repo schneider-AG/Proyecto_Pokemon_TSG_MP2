@@ -111,7 +111,7 @@ public class Consola {
         return "SIN ENERGIA";
     }
 
-   
+
     private String textoEnergias(List<TipoEnergia> energias) {
         if (energias == null || energias.isEmpty()) {
             return "Sin energia";
@@ -233,15 +233,15 @@ public class Consola {
         return opcion;
     }
 
-    public void anunciarGanador(String nombre) {
+    public void anunciarGanador(String nombre, CondicionVictoria condicion) {
         String igual = linea('=', 70);
         System.out.println(igual);
         System.out.println("  ¡" + nombre + " ha ganado el duelo Pokemon!");
+        System.out.println("  Victoria: " + condicion.getDescripcion());
         System.out.println("  ¡Eres el nuevo Campeon!");
         System.out.println(igual);
-    }
+}
 
-   
     private String linea(char c, int n) {
         String s = "";
         for (int i = 0; i < n; i++) {

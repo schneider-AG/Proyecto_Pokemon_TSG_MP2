@@ -6,11 +6,6 @@ import java.util.List;
 public class App {
 
     public static void main(String[] args) {
-
-        Tablero ventana = new Tablero();
-        ventana.setVisible(true);
-        ventana.getDefaultCloseOperation();
-
         Consola consola = new Consola();
 
         CatalogoCartas catalogo =
@@ -72,6 +67,12 @@ public class App {
                 jugador2,
                 consola
             );
+
+        Tablero ventana = new Tablero();
+        ventana.setVisible(true);
+        ventana.getDefaultCloseOperation();
+        ventana.setMotor(motor);
+
 
         if (!motor.iniciarPartida()) {
             return;

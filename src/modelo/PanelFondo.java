@@ -8,10 +8,6 @@ import javax.swing.JPanel;
 public class PanelFondo extends JPanel {
     private Image fondo;
 
-    public PanelFondo() {
-        // constructor vacío, por si el diseñador lo necesita
-    }
-
     public PanelFondo(String ruta) {
         java.net.URL url = getClass().getResource(ruta);
         if (url != null) {

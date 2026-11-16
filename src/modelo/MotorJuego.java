@@ -621,7 +621,7 @@ private void cambiarTurno() {
     }
 }
 
-private Jugador jugadorActual() {
+public Jugador jugadorActual() {
 
     if (turno == 1) {
         return jugador1;

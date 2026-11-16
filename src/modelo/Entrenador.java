@@ -1,5 +1,5 @@
 package modelo;
-public abstract class Entrenador extends Carta {
+public abstract class Entrenador extends Carta implements Activable {
 
     private String descripcion;
 
@@ -12,7 +12,4 @@ public abstract class Entrenador extends Carta {
         return descripcion;
     }
 
-    public abstract Boolean puedeActivar(Jugador jugador);
-
-    public abstract Void Activar(Jugador jugador);
 }

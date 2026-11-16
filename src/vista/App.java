@@ -7,6 +7,10 @@ public class App {
 
     public static void main(String[] args) {
 
+        Tablero ventana = new Tablero();
+        ventana.setVisible(true);
+        ventana.getDefaultCloseOperation();
+
         Consola consola = new Consola();
 
         CatalogoCartas catalogo =

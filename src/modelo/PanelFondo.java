@@ -20,8 +20,7 @@ public class PanelFondo extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (fondo != null) {
-            g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
-        }
+        if (fondo == null) return;
+        g.drawImage(fondo, 0, 0, getWidth(), getHeight(), null);
     }
 }

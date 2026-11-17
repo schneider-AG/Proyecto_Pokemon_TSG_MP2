@@ -12,18 +12,21 @@ import javax.swing.SwingUtilities;
 
 import modelo.Carta;
 import modelo.Jugador;
+import modelo.MotorGrafico;
 import modelo.MotorJuego;
 import modelo.PanelFondo;
 import modelo.Pokemon;
 import modelo.PokemonBasico;
 import modelo.TipoEnergia;
 import modelo.ZonaEnergia;
+import modelo.Jugador;
 
 public class Tablero extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Tablero.class.getName());
     private MotorJuego motor;
     private ZonaEnergia zonaEnergiaJugadorActual;
+    private MotorGrafico motorGrafico;
 
     MouseAdapter clicEnergia = new MouseAdapter() {
         //TipoEnergia energiaActual;
@@ -80,9 +83,10 @@ public class Tablero extends javax.swing.JFrame {
     /**
      * Creates new form Tablero
      */
-    public Tablero() {
+    public Tablero(MotorGrafico motor) {
+        this.motorGrafico = motor;
         initComponents();
-        probarMano(10);
+        probarMano(5);
         actualizarEnergia();
     }
 
@@ -277,7 +281,7 @@ public class Tablero extends javax.swing.JFrame {
 
         jButton1.setText("Pasar turno");
         panelFondo.add(jButton1);
-        jButton1.setBounds(210, 680, 90, 23);
+        jButton1.setBounds(225, 684, 100, 24);
 
         jLabel8.setText("Premios: 1/3");
         jLabel8.setOpaque(true);
@@ -314,15 +318,15 @@ public class Tablero extends javax.swing.JFrame {
         panelFondo.add(jPanel18);
         jPanel18.setBounds(30, 390, 50, 50);
 
-        jLabel17.setText("Nombre jugador rival");
+        jLabel17.setText("Rival: " + motorGrafico.getJugador1().getNombre());
         jLabel17.setOpaque(true);
         panelFondo.add(jLabel17);
-        jLabel17.setBounds(30, 20, 120, 16);
+        jLabel17.setBounds(20, 20, 120, 30);
 
-        jLabel18.setText("Nombre propio");
+        jLabel18.setText("Mi nombre: " + motorGrafico.getJugador2().getNombre());
         jLabel18.setOpaque(true);
         panelFondo.add(jLabel18);
-        jLabel18.setBounds(30, 690, 90, 16);
+        jLabel18.setBounds(20, 690, 90, 30);
 
         jLabel19.setText("Estado de energía");
         jLabel19.setOpaque(true);

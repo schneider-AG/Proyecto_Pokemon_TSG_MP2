@@ -28,8 +28,6 @@ public boolean iniciarPartida() {
     jugador1.robarManoInicial();
     jugador2.robarManoInicial();
 
-    colocarPokemonInicial(jugador1);
-    colocarPokemonInicial(jugador2);
 
     if (jugador1.getCampo().getPokemonActivo() == null
             || jugador2.getCampo().getPokemonActivo() == null) {
@@ -45,7 +43,7 @@ public boolean iniciarPartida() {
 }
 
 
-    private void colocarPokemonInicial(Jugador jugador) {
+    public List<Carta> getBasicosEnMano(Jugador jugador) {
 
         List<Carta> mano = jugador.getMano();
 
@@ -57,40 +55,10 @@ public boolean iniciarPartida() {
             }
         }
 
-        if (basicos.isEmpty()) {
-            return;
-        }
+        return basicos;
 
-        // 1. El jugador elige 1 Pokémon como Activo
-        int opcion = consola.elegirPokemonActivo(basicos, jugador);
-
-        Carta activo = basicos.get(opcion - 1);
-        jugador.colocarPokemonEnJuego(activo);
-        System.out.println(activo.getNombre() + " es el Pokémon activo.");
-
-        
-        while (jugador.getCampo().getBanco().size() < 2) {
-            List<Carta> restantes = new ArrayList<>();
-            for (Carta c : jugador.getMano()) {
-                if (c instanceof Pokemon && c.esPokemonBasico()) {
-                    restantes.add(c);
-                }
-            }
-            if (restantes.isEmpty()) {
-                break;
-            }
-            int sel = consola.elegirPokemonBanca(restantes);
-            if (sel == 0) {
-                break;
-            }
-            Carta alBanco = restantes.get(sel - 1);
-            if (jugador.colocarPokemonEnJuego(alBanco)) {
-                System.out.println(alBanco.getNombre() + " fue al banco.");
-            } else {
-                System.out.println("No fue posible colocarlo.");
-            }
-        }
     }
+
 
     public void ejecutarPartida() {
 

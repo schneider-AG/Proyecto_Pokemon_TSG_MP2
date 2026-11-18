@@ -166,7 +166,7 @@ public class JugadorInformacion extends javax.swing.JFrame {
     // End of variables declaration  
     
     private void continuar() {
-        new Tablero(motorGrafico).setVisible(true);
+        new Tablero(this.motorGrafico).setVisible(true);
         dispose();                                // cierra esta ventana
     }
 

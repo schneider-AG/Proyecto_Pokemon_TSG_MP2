@@ -223,6 +223,19 @@ public class Jugador {
         return this.campo.getBanco().contains(pokemon);
     }
 
+     public String validarEleccion(Carta carta){
+        if(carta == null || !mano.contains(carta)){
+            return "Esa carta no esta en tu mano";
+        }
+        if (!(carta instanceof Pokemon) || !carta.esPokemonBasico()) {
+            return "Solo los Pokémon básicos se colocan en el campo";
+        }
+        if (campo.getPokemonActivo() != null) {
+            return "Tu banco activo está lleno";
+        }
+    return null;
+}
+
     public String getNombre() {
         return this.nombre;
     }
@@ -300,5 +313,14 @@ public class Jugador {
         mano.remove(carta);
         return true;
     } 
+
+    public String validarColocacion(Carta carta) {
+    if (carta == null || !mano.contains(carta)) return "Esa carta no está en tu mano";
+    if (!(carta instanceof Pokemon) || !carta.esPokemonBasico())
+        return "Solo los Pokémon básicos se colocan en el campo";
+    if (campo.getPokemonActivo() != null && campo.getBanco().size() >= 2)
+        return "Tu banco está lleno";
+    return null;   // null = se puede
+    }
 
 }

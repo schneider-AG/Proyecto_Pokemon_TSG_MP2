@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -24,6 +25,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -81,30 +83,6 @@ public class Tablero extends javax.swing.JFrame {
         //energiaActual = actual;
         registrarEvento("Energía seleccionada. Elige un Pokémon.");
         }
-        /*if(energiaSeleccionada){
-            Component clicado = (Component) e.getSource();
-            if (SwingUtilities.isDescendingFrom(clicado, panelActivo)) {
-                Pokemon activo = motor.jugadorActual().getCampo().getPokemonActivo();
-
-                if (activo != null) {
-                    motor.jugadorActual().getCampo().getPokemonActivo().adjuntarEnergia(energiaActual); // Tu método para darle la energía
-                    energiaSeleccionada = false;
-                    registrarEvento("Energía asignada a " + activo.getNombre() + ".");
-                } else {
-                    registrarEvento("Este panel está vacío, no hay Pokémon activo.");
-                }
-            }
-            Pokemon objetivo = motor.jugadorActual().getCampo().getPokemonActivo();
-            if (objetivo != null) {
-                // Llama aquí al método de tu motor que une la energía actual al Pokémon:
-                motor.jugadorActual().getCampo().getPokemonActivo().adjuntarEnergia(energiaActual); // Asegúrate de que este método exista y funcione correctamente
-
-                energiaSeleccionada = false; // Reinicia la selección
-                registrarEvento("Energía asignada a " + objetivo.getNombre() + ".");
-                usarEnergia(origen); // Oculta la energía usada
-                 // Refresca los paneles para mostrar la energía en el Pokémon
-            }
-        }*/
     }
 };
     
@@ -124,10 +102,9 @@ public class Tablero extends javax.swing.JFrame {
     setExtendedState(JFrame.MAXIMIZED_BOTH);
 
     motorGrafico.iniciarPartida();
-    mostrarMano(motorGrafico.getJugador1().getMano()); // Reparte las manos iniciales y define el jugador 1
     conectarEventos();             // Activa los clics en el tablero y energías
-    configurarEventos();           // Activa el teclado
     actualizar();                  // Dibuja la mano, energía y tablero por primera vez
+    actualizarMano();
     
     registrarEvento("¡Comienza la partida! Turno de: " + motorGrafico.jugadorActual().getNombre());
 }
@@ -204,6 +181,13 @@ public class Tablero extends javax.swing.JFrame {
         inferior.add(Box.createVerticalStrut(12));
         inferior.add(jLabel18);
         columna.add(inferior, BorderLayout.SOUTH);
+
+        JPanel filaJugador = new JPanel(new BorderLayout(8, 0));
+        filaJugador.setOpaque(false);
+        filaJugador.add(jLabel18, BorderLayout.CENTER);
+        filaJugador.add(btnRendirse, BorderLayout.EAST);
+
+        inferior.add(filaJugador);
         return columna;
     }
 
@@ -218,6 +202,11 @@ public class Tablero extends javax.swing.JFrame {
         panelCentroTablero.setOpaque(false);
         panelCentroTablero.setLayout(new BoxLayout(panelCentroTablero, BoxLayout.Y_AXIS));
 
+        manoRival.setOpaque(false);
+        manoRival.setLayout(new FlowLayout(FlowLayout.CENTER, 12, 2));
+        manoRival.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+
         JPanel bancaRival = crearFilaCartas(panelBanco5, panelBanco4);
         JPanel activoRival = crearPilaCarta(jLabel11, panelActivoRival);
         JPanel activoPropio = crearPilaCarta(jLabel12, panelActivo);
@@ -226,6 +215,7 @@ public class Tablero extends javax.swing.JFrame {
         jLabel11.setHorizontalAlignment(JLabel.CENTER);
         jLabel12.setHorizontalAlignment(JLabel.CENTER);
 
+        panelCentroTablero.add(manoRival);
         panelCentroTablero.add(Box.createVerticalGlue());
         panelCentroTablero.add(bancaRival);
         panelCentroTablero.add(Box.createVerticalGlue());
@@ -347,6 +337,7 @@ public class Tablero extends javax.swing.JFrame {
         establecerTamano(panelBanco5, anchoCarta, altoCarta);
         ajustarTamanoDorso(jLabel3, anchoCarta, altoCarta);
         ajustarTamanoDorso(jLabel4, anchoCarta, altoCarta);
+        
 
         for (Component componente : panelMano.getComponents()) {
             if (componente instanceof PokemonPanel carta) {
@@ -356,7 +347,10 @@ public class Tablero extends javax.swing.JFrame {
         int anchoMano = Math.max(400, panelMano.getComponentCount() * (anchoCarta + 30));
         panelMano.setPreferredSize(new Dimension(anchoMano, altoCarta + 10));
         panelMano.revalidate();
-        if (panelCentroTablero != null) panelCentroTablero.revalidate();
+        actualizarManoRival();
+        if (panelCentroTablero != null){
+            panelCentroTablero.revalidate();
+        }
     }
 
     private void establecerTamano(PokemonPanel panel, int ancho, int alto) {
@@ -365,6 +359,7 @@ public class Tablero extends javax.swing.JFrame {
         panel.setPreferredSize(tamano);
         panel.setMinimumSize(tamano);
         panel.setMaximumSize(tamano);
+        revalidate();
     }
 
     private void ajustarTamanoDorso(JLabel etiqueta, int ancho, int alto) {
@@ -377,6 +372,24 @@ public class Tablero extends javax.swing.JFrame {
             etiqueta.setIcon(new ImageIcon(imagen));
         }
     }
+
+    public void rendirse(){
+    Jugador actual = motorGrafico.jugadorActual();
+    int opcion = JOptionPane.showConfirmDialog(
+            this,
+            actual.getNombre() + ", ¿seguro que deseas rendirte?",
+            "Confirmar rendición",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+    );
+    if (opcion == JOptionPane.YES_OPTION) {
+        Jugador ganador = motorGrafico.rendirse();
+        registrarEvento(actual.getNombre() + " se rindió. ¡Gana " + ganador.getNombre() + "!");
+        JOptionPane.showMessageDialog(this, "¡" + ganador.getNombre() + " gana la partida!");
+        jButton1.setEnabled(false);
+        btnRendirse.setEnabled(false);
+    }
+}
 
     private void initComponents() {
 
@@ -391,7 +404,7 @@ public class Tablero extends javax.swing.JFrame {
         jProgressBar6 = new javax.swing.JProgressBar();
         panelBanco4 = new PokemonPanel(null);
         jProgressBar1 = new javax.swing.JProgressBar();
-        jPanel11 = new javax.swing.JPanel();
+        manoRival = new javax.swing.JPanel();
         panelActivo = new PokemonPanel(null);
         jProgressBar8 = new javax.swing.JProgressBar();
         panelBanco5 = new PokemonPanel(null);
@@ -420,6 +433,7 @@ public class Tablero extends javax.swing.JFrame {
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jPanel13 = new javax.swing.JPanel();
+        btnRendirse = new JButton();
         lblEnergiaPsiquica = new javax.swing.JLabel();
         PanelPopup panelInformacion = new PanelPopup();
         popup = new JPopupMenu();
@@ -432,98 +446,57 @@ public class Tablero extends javax.swing.JFrame {
         panelFondo.setLayout(null);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/CartaImagen.png"))); // NOI18N
-        panelFondo.add(jLabel3);
-        jLabel3.setBounds(100, 220, 50, 70);
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/CartaImagen.png"))); // NOI18N
-        panelFondo.add(jLabel4);
-        jLabel4.setBounds(360, 450, 50, 70);
 
         panelBanco1.setBackground(new java.awt.Color(204, 255, 255));
 
 
-
-        panelFondo.add(panelBanco1);
-        panelBanco1.setBounds(289, 525, 52, 70);
-
         panelBanco2.setBackground(new java.awt.Color(204, 255, 255));
 
-        panelFondo.add(panelBanco2);
-        panelBanco2.setBounds(249, 210, 52, 70);
 
         panelBanco3.setBackground(new java.awt.Color(204, 255, 255));
 
 
-
-        panelFondo.add(panelBanco3);
-        panelBanco3.setBounds(209, 525, 52, 70);
-
         panelBanco4.setBackground(new java.awt.Color(204, 255, 255));
 
 
-
-
-        panelFondo.add(panelBanco4);
-        panelBanco4.setBounds(289, 130, 52, 70);
-
-        jPanel11.setBackground(new java.awt.Color(204, 204, 255));
-        jPanel11.setLayout(null);
-        panelFondo.add(jPanel11); 
-        jPanel11.setBounds(0, 40, 550, 80);
+        manoRival.setBackground(new java.awt.Color(204, 204, 255));
+        manoRival.setLayout(null);
 
         panelActivo.setBackground(new java.awt.Color(204, 255, 255));
 
-
-        panelFondo.add(panelActivo);
-        panelActivo.setBounds(249, 445, 52, 70);
 
         panelBanco5.setBackground(new java.awt.Color(204, 255, 255));
 
 
 
-        panelFondo.add(panelBanco5);
-        panelBanco5.setBounds(209, 130, 52, 70);
-        panelFondo.add(jLabel5);
-        jLabel5.setBounds(420, 10, 0, 0);
-
         panelMano.setBackground(new java.awt.Color(204, 204, 255));
         panelMano.setLayout(null);
-        panelFondo.add(panelMano);
-        panelMano.setBounds(0, 610, 550, 70);
+
 
         jPanel16.setBackground(new java.awt.Color(204, 255, 204));
         jPanel16.setLayout(null);
 
         lblEnergiaAgua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaAgua.png"))); // NOI18N
-        jPanel16.add(lblEnergiaAgua);
-        lblEnergiaAgua.setBounds(0, 0, 50, 50);
 
-        panelFondo.add(jPanel16);
-        jPanel16.setBounds(30, 340, 50, 50);
 
         jLabel2.setBackground(new java.awt.Color(255, 255, 255));
         jLabel2.setForeground(new java.awt.Color(204, 0, 51));
         jLabel2.setText("Mazo rival");
         jLabel2.setOpaque(true);
-        panelFondo.add(jLabel2);
-        jLabel2.setBounds(245, 20, 60, 16);
+
 
         jPanel15.setBackground(new java.awt.Color(204, 255, 204));
         jPanel15.setLayout(null);
 
         lblEnergiaFuego.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaFuego.png"))); // NOI18N
-        jPanel15.add(lblEnergiaFuego);
-        lblEnergiaFuego.setBounds(0, 0, 50, 50);
 
-        panelFondo.add(jPanel15);
-        jPanel15.setBounds(30, 290, 50, 50);
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        panelFondo.add(jScrollPane1);
-        jScrollPane1.setBounds(360, 170, 110, 220);
 
         jLabel6.setBackground(new java.awt.Color(255, 255, 255));
         jLabel6.setForeground(new java.awt.Color(204, 0, 51));
@@ -534,88 +507,67 @@ public class Tablero extends javax.swing.JFrame {
 
         jLabel7.setText("Premios: 1/3");
         jLabel7.setOpaque(true);
-        panelFondo.add(jLabel7);
-        jLabel7.setBounds(390, 20, 66, 16);
+
 
         jButton1.setText("Pasar turno");
-        panelFondo.add(jButton1);
-        jButton1.setBounds(225, 684, 100, 24);
+
 
         jLabel8.setText("Premios: 1/3");
         jLabel8.setOpaque(true);
-        panelFondo.add(jLabel8);
-        jLabel8.setBounds(390, 690, 72, 16);
+
 
         jLabel9.setText("Número de cartas : 0");
         jLabel9.setOpaque(true);
-        panelFondo.add(jLabel9);
-        jLabel9.setBounds(330, 420, 110, 20);
 
         jLabel10.setText("Número de cartas : 0");
         jLabel10.setOpaque(true);
-        panelFondo.add(jLabel10);
-        jLabel10.setBounds(69, 190, 110, 20);
+
 
         jLabel11.setText("Activo Rival");
         jLabel11.setOpaque(true);
-        panelFondo.add(jLabel11);
-        jLabel11.setBounds(240, 290, 70, 16);
 
         jLabel12.setText("Activo propio");
         jLabel12.setOpaque(true);
-        panelFondo.add(jLabel12);
-        jLabel12.setBounds(240, 425, 73, 16);
+
 
         jPanel18.setBackground(new java.awt.Color(204, 255, 204));
         jPanel18.setLayout(null);
 
         lblEnergiaElectrica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaElectrica.png"))); // NOI18N
-        jPanel18.add(lblEnergiaElectrica);
-        lblEnergiaElectrica.setBounds(0, 0, 50, 50);
 
-        panelFondo.add(jPanel18);
-        jPanel18.setBounds(30, 390, 50, 50);
 
         jLabel17.setText("Rival: " + motorGrafico.getJugador1().getNombre());
         jLabel17.setOpaque(true);
-        panelFondo.add(jLabel17);
-        jLabel17.setBounds(20, 20, 120, 30);
+
 
         jLabel18.setText("Mi nombre: " + motorGrafico.getJugador2().getNombre());
         jLabel18.setOpaque(true);
-        panelFondo.add(jLabel18);
-        jLabel18.setBounds(20, 690, 90, 30);
+
 
         jLabel19.setText("Estado de energía");
         jLabel19.setOpaque(true);
-        panelFondo.add(jLabel19);
-        jLabel19.setBounds(20, 500, 100, 16);
+
 
         jLabel20.setText("Turno " + motorGrafico.getTurno() + " - " + motorGrafico.jugadorActual().getNombre());
         jLabel20.setOpaque(true);
-        panelFondo.add(jLabel20);
-        jLabel20.setBounds(223, 0, 104, 16);
+
 
         jPanel13.setBackground(new java.awt.Color(204, 255, 204));
         jPanel13.setLayout(null);
 
         lblEnergiaPsiquica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaPsiquica.png"))); // NOI18N
         lblEnergiaPsiquica.setToolTipText("");
-        jPanel13.add(lblEnergiaPsiquica);
-        lblEnergiaPsiquica.setBounds(0, 0, 50, 50);
 
-        panelFondo.add(jPanel13);
-        jPanel13.setBounds(30, 440, 50, 50);
+        btnRendirse.setText("Rendirse");
+        btnRendirse.setForeground(new Color(180, 30, 30));
+    btnRendirse.setFont(btnRendirse.getFont().deriveFont(Font.BOLD, 11f));
+    btnRendirse.setMargin(new Insets(2, 8, 2, 8));
+    btnRendirse.setFocusable(false);
 
         jPanel15.setVisible(false);
         jPanel16.setVisible(false);
         jPanel18.setVisible(false);
         jPanel13.setVisible(false);
-
-        /*lblEnergiaFuego.addMouseListener(clicEnergia);
-        lblEnergiaAgua.addMouseListener(clicEnergia);
-        lblEnergiaElectrica.addMouseListener(clicEnergia);
-        lblEnergiaPsiquica.addMouseListener(clicEnergia);*/
 
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -706,7 +658,7 @@ private void probarMano(Jugador jugador) {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel panelFondo;
     private javax.swing.JPanel panelMano; // Panel mano
-    private javax.swing.JPanel jPanel11; // Panel mano rival
+    private javax.swing.JPanel manoRival; // Panel mano rival
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
@@ -725,6 +677,7 @@ private void probarMano(Jugador jugador) {
     private javax.swing.JProgressBar jProgressBar9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
+    private JButton btnRendirse;
     // End of variables declaration        
     
     /// Conectar eventos
@@ -767,79 +720,87 @@ private void probarMano(Jugador jugador) {
     private boolean esLabelDeEnergia(Object origen) {
     return origen == lblEnergiaFuego || origen == lblEnergiaAgua || origen == lblEnergiaElectrica || origen == lblEnergiaPsiquica;
     }
-private void configurarEventos() {
-    this.setFocusable(true);
 
-    // Presionar cualquier tecla
-    this.addKeyListener(new KeyAdapter() {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (pantalla.width - popup.getPreferredSize().width) / 2;
-        int y = (pantalla.height - popup.getPreferredSize().height) / 2;
-        popup.show(panelFondo, x, y);
+    
+    private void pasarTurno(){
+        Jugador actual = motorGrafico.jugadorActual();
+        if (actual.getCampo().getPokemonActivo() == null) {
+            JOptionPane.showMessageDialog(this, "Debes colocar un Pokémon en el puesto Activo antes de pasar el turno.");
+            return;
         }
-    });
-}
 
+        // 2. Limpiar cualquier carta o energía que haya quedado seleccionada a medias
+        cartaSeleccionada = null;
+        // energiaSeleccionada = false; // Descomenta si ya tienes esta variable
+
+        // 3. Ejecutar el cambio en el motor
+        motorGrafico.pasarTurno();
+
+        // 4. Refrescar toda la interfaz (esto hace que el tablero "gire")
+        actualizar();
+        actualizarMano();
+        actualizarManoRival();
+
+        registrarEvento("Turno " + motorGrafico.getTurno() + " - Juega: " + motorGrafico.jugadorActual().getNombre());
+    }
 
 private final MouseAdapter clickTablero = new MouseAdapter() {
     @Override
-    public void mouseClicked(MouseEvent e) {
-        Object origen = e.getSource();
-        if (!(origen instanceof PokemonPanel)) return;
+    public void mousePressed(MouseEvent e) {
+        
+        Component origen = (Component)e.getSource();
 
-        PokemonPanel panelClickeado = (PokemonPanel) origen;
+        while (origen != null && !(origen instanceof PokemonPanel)) {
+            origen = origen.getParent();
+        }
+        if (!(origen instanceof PokemonPanel panelClickeado)){
+            return;
+        }
+
         Jugador jugador = motorGrafico.jugadorActual();
 
-        // PRIMER CLIC: El jugador tocó una carta que está dentro de panelMano
+        // PRIMER CLIC: El jugador tocó una carta en su mano
         if (panelClickeado.getParent() == panelMano) {
             Carta carta = panelClickeado.getCarta();
-            if (carta == null) return;
-
-            String error = jugador.validarColocacion(carta);
+            String error = motorGrafico.seleccionarCartaMano(carta);
             if (error != null) {
                 JOptionPane.showMessageDialog(Tablero.this, error);
                 return;
             }
-
             cartaSeleccionada = carta;
-            registrarEvento("Seleccionaste: " + carta.getNombre()); // Feedback visual
+            registrarEvento("Seleccionaste: " + carta.getNombre());
             return;
         }
 
-        // SEGUNDO CLIC: El jugador tocó panelActivo o algún panelBanco
-        if (origen == panelActivo && jugador.getCampo().getPokemonActivo() != null) {
-        int x = (panelFondo.getWidth() - popup.getPreferredSize().width) / 2;
-        int y = (panelFondo.getHeight() - popup.getPreferredSize().height) / 2;
-        popup.show(panelFondo, x, y);
-        } else if (origen == panelActivo || esPanelBanco(origen)) {
-            if (cartaSeleccionada == null) {
-                JOptionPane.showMessageDialog(Tablero.this, "Primero haz clic en una carta de tu mano");
+        // SEGUNDO CLIC: El jugador tocó Activo o Banca propia
+        if (panelClickeado == panelActivo || panelClickeado == panelBanco1 || panelClickeado == panelBanco3) {
+            Pokemon objetivo = (panelClickeado.getCarta() instanceof Pokemon p) ? p : null;
+
+            // Si hay carta seleccionada, intenta bajar Básico o Evolucionar
+            if (cartaSeleccionada != null) {
+                boolean esActivo = (panelClickeado == panelActivo);
+                String error = motorGrafico.jugarCartaEnCampo(cartaSeleccionada, esActivo, objetivo);
+                if (error != null) {
+                    JOptionPane.showMessageDialog(Tablero.this, error);
+                    return;
+                }
+                registrarEvento("Jugaste: " + cartaSeleccionada.getNombre());
+                cartaSeleccionada = null;
+                actualizar();
+                actualizarMano();
                 return;
             }
 
-            // Verifica que el espacio del tablero donde hizo clic esté vacío
-            if (panelClickeado.getCarta() != null) {
-                JOptionPane.showMessageDialog(Tablero.this, "Ese espacio ya está ocupado");
-                return;
+            // Si no hay carta seleccionada y tocó su Activo ocupado, abre el menú de combate
+            if (panelClickeado == panelActivo && objetivo != null) {
+                int x = (panelFondo.getWidth() - popup.getPreferredSize().width) / 2;
+                int y = (panelFondo.getHeight() - popup.getPreferredSize().height) / 2;
+                popup.show(panelFondo, x, y);
+            } else {
+                JOptionPane.showMessageDialog(Tablero.this, "Primero selecciona una carta de tu mano");
             }
-
-            // Validación específica si tocó el espacio activo
-            if (origen == panelActivo && jugador.getCampo().getPokemonActivo() != null) {
-                JOptionPane.showMessageDialog(Tablero.this, "Ya tienes un Pokémon activo");
-                return;
-            }
-
-            // Coloca la carta en el modelo, limpia la selección y refresca la pantalla
-            jugador.colocarPokemonEnJuego(cartaSeleccionada);
-            cartaSeleccionada = null;
-            actualizar();
-    } else {
-        JOptionPane.showMessageDialog(Tablero.this, "Primero selecciona un Pokémon de tu mano");
+        }
     }
-        actualizarMano();
-}
 
 };
 
@@ -851,17 +812,48 @@ private void conectarEventos() {
     panelActivo.addMouseListener(clickTablero);
     panelBanco1.addMouseListener(clickTablero);
     panelBanco3.addMouseListener(clickTablero);
+    jButton1.addActionListener(e -> pasarTurno());
+    btnRendirse.addActionListener(e -> rendirse());
+}
+    private void actualizarManoRival() {
+    Jugador rival = motorGrafico.jugadorRival();
+    int anchoCarta = (int) Math.round(CARD_WIDTH * escalaCartas);
+    int altoCarta = (int) Math.round(CARD_HEIGHT * escalaCartas);
+
+    manoRival.removeAll();
+    manoRival.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 4));
+    manoRival.setOpaque(false);
+    manoRival.setPreferredSize(new Dimension(800, altoCarta + 8));
+    
+
+    ImageIcon iconoReverso = null;
+    if (imagenDorsoMazo != null) {
+        Image imgEscalada = imagenDorsoMazo.getScaledInstance(anchoCarta, altoCarta, Image.SCALE_SMOOTH);
+        iconoReverso = new ImageIcon(imgEscalada);
+    }
+
+    for (int i = 0; i < rival.getMano().size(); i++) {
+        JLabel cartaOculta = new JLabel(iconoReverso);
+        Dimension tamano = new Dimension(anchoCarta, altoCarta);
+        cartaOculta.setPreferredSize(tamano);
+        cartaOculta.setMinimumSize(tamano);
+        cartaOculta.setMaximumSize(tamano);
+        manoRival.add(cartaOculta);
+    }
+
+    manoRival.revalidate();
+    manoRival.repaint();
 }
 
     private void actualizar() {
         Jugador propio = motorGrafico.jugadorActual();
-        Jugador rival = propio == motorGrafico.getJugador1()
-            ? motorGrafico.getJugador2() : motorGrafico.getJugador1();
+        Jugador rival =  motorGrafico.jugadorRival();
 
         panelActivo.mostrar(propio.getCampo().getPokemonActivo());
         panelActivoRival.mostrar(rival.getCampo().getPokemonActivo());
         mostrarBanca(propio.getCampo().getBanco(), panelBanco3, panelBanco1);
         mostrarBanca(rival.getCampo().getBanco(), panelBanco5, panelBanco4);
+        actualizarManoRival();
 
         jLabel17.setText("Rival: " + rival.getNombre());
         jLabel18.setText("Mi nombre: " + propio.getNombre());
@@ -870,6 +862,7 @@ private void conectarEventos() {
         jLabel8.setText("Premios: " + propio.getPuntosPremio() + "/3");
         jLabel10.setText("Número de cartas: " + rival.getMazo().getCantidadCartas());
         jLabel9.setText("Número de cartas: " + propio.getMazo().getCantidadCartas());
+
         ajustarTamanosCartas();
     }
 
@@ -879,21 +872,4 @@ private void conectarEventos() {
         }
     }
 
-    /*private void prepararPrueba() {
-    // 1. Crear un Pokémon de prueba (ajusta los parámetros a tu constructor de Pokemon)
-    Pokemon pokemonPrueba = new PokemonBasico("Charmander", TipoEnergia.FUEGO, (short)60, (short)60, (byte) 1);
-
-    // 2. Asignarlo manualmente como Pokémon activo del jugador actual en el motor
-    Jugador jugador = motor.jugadorActual();
-    jugador.colocarPokemonEnJuego(pokemonPrueba); // Asegúrate de que este método exista y funcione correctamente
-
-    // (Opcional) Si tu zona de energía empieza vacía, fuerza una energía para probar:
-    // jugador.getZonaEnergia().generarEnergia(); 
-    JLabel lblNombrePokemon = new JLabel();
-    panelActivo.add(lblNombrePokemon);
-    // 3. Mostrarlo visualmente en el JLabel que está dentro de tu panel de Pokémon
-    lblNombrePokemon.setText(pokemonPrueba.getNombre() + " (PS: " + pokemonPrueba.getPsActual() + ")");
-    lblNombrePokemon.setVisible(true);
-    panelActivo.setVisible(true);
-    }*/
 };

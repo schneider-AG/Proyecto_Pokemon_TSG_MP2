@@ -12,6 +12,7 @@ public class Jugador {
     private ZonaEnergia zonaEnergia;
     private List<Carta> mano;
     private int puntosPremio;
+    private static final int MAX_CARTAS = 10;
 
     private boolean puedeAtacarEsteTurno;
     private boolean yaAtacoEsteTurno;
@@ -50,8 +51,15 @@ public class Jugador {
         iniciarTurno(true, turnoGlobal);
     }
 
+    public boolean tieneManoLlena() {
+    return mano.size() >= MAX_CARTAS;
+    }
+
     // Robar cartas
     public Carta robarCarta() {
+        if(!puedeRobar() || tieneManoLlena()){
+            return null;
+        }
         Carta carta = this.mazo.robar();
         if (carta == null) {
             return null;
@@ -316,10 +324,12 @@ public class Jugador {
 
     public String validarColocacion(Carta carta) {
     if (carta == null || !mano.contains(carta)) return "Esa carta no está en tu mano";
-    if (!(carta instanceof Pokemon) || !carta.esPokemonBasico())
+    if (!(carta instanceof Pokemon) || !carta.esPokemonBasico()){
         return "Solo los Pokémon básicos se colocan en el campo";
-    if (campo.getPokemonActivo() != null && campo.getBanco().size() >= 2)
+    }
+    if (campo.getPokemonActivo() != null && campo.getBanco().size() >= 2){
         return "Tu banco está lleno";
+    }
     return null;   // null = se puede
     }
 

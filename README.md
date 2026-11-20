@@ -2,9 +2,9 @@
 
 **Integrantes del equipo**
 
-Samuel Mendoza Padilla (2569299 - 3743) - GitHub: LegendUser-CodeJuan
+Samuel Mendoza Padilla (2569299 - 3743) - GitHub: LegendUser-Code
 
-José Bonilla Moya (2569254 - 3743) - GitHub: juanjosebonilla
+Juan José Bonilla Moya (2569254 - 3743) - GitHub: juanjosebonilla
 
 Schneider Álvarez Gil (2569328 - 3743) - GitHub: schneider-AG
 

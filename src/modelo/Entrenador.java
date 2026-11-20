@@ -18,8 +18,4 @@ public abstract class Entrenador extends Carta implements Activable {
         return requiereObjetivoTablero;
     }
 
-    public abstract Boolean puedeActivar(Jugador jugador);
-
-    public abstract String Activar(Jugador jugador, Pokemon objetivo);
-
 }

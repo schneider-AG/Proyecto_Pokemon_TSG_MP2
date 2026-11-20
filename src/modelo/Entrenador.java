@@ -1,5 +1,5 @@
 package modelo;
-public abstract class Entrenador extends Carta {
+public abstract class Entrenador extends Carta implements Activable {
 
     private String descripcion;
     private boolean requiereObjetivoTablero;

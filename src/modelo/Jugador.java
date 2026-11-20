@@ -16,10 +16,32 @@ public class Jugador {
 
     private boolean puedeAtacarEsteTurno;
     private boolean yaAtacoEsteTurno;
+    private boolean yaRetiroEsteTurno;
     private boolean soporteUsadoEsteTurno;
     private int turnosJugados;
     private int turnoGlobal;
     private boolean turboVelocidadUsadoEsteTurno;
+
+
+    public boolean isYaAtacoEsteTurno() {
+        return yaAtacoEsteTurno;
+    }
+
+
+    public void setYaAtacoEsteTurno(boolean yaAtacoEsteTurno) {
+        this.yaAtacoEsteTurno = yaAtacoEsteTurno;
+    }
+
+
+    public boolean isYaRetiroEsteTurno() {
+        return yaRetiroEsteTurno;
+    }
+
+
+    public void setYaRetiroEsteTurno(boolean yaRetiroEsteTurno) {
+        this.yaRetiroEsteTurno = yaRetiroEsteTurno;
+    }
+
 
     public Jugador(String nombre, Mazo mazo, ZonaEnergia zonaEnergia) {
         if (nombre == null || nombre.isEmpty()) {
@@ -77,30 +99,6 @@ public class Jugador {
         return this.mazo.getCantidadCartas() > 0;
     }
 
-    // Energia
-    public void generarEnergiaTurno() {
-        this.zonaEnergia.generarEnergia();
-    }
-
-    public boolean adjuntarEnergia() {
-        return adjuntarEnergia(this.campo.getPokemonActivo());
-    }
-
-    public boolean adjuntarEnergia(Pokemon objetivo) {
-        if (!this.zonaEnergia.hayEnergiaDisponible()) {
-            return false;
-        }
-        if (!esPokemonPropio(objetivo)) {
-            return false;
-        }
-        TipoEnergia energia = this.zonaEnergia.tomarEnergia();
-        if (energia == null) {
-            return false;
-        }
-        objetivo.adjuntarEnergia(energia);
-        return true;
-    }
-
     
     public boolean colocarPokemonEnJuego(Carta carta) {
         if (carta == null || !this.mano.contains(carta)) {
@@ -151,6 +149,7 @@ public class Jugador {
 
     public boolean atacar(Ataque ataque, Jugador oponente) {
         if (!this.puedeAtacarEsteTurno || this.yaAtacoEsteTurno) {
+            System.out.println("No se pudo atacar");
             return false;
         }
         Pokemon activo = this.campo.getPokemonActivo();
@@ -167,23 +166,26 @@ public class Jugador {
         if (objetivo.estaDerrotado()) {
             ganarPuntoPremio(objetivo.getPuntosPremio());
             oponente.getCampo().retirarActivo();
-            oponente.promoverDesdeBanco();
         }
         return true;
     }
+public void reiniciarEstadoTurno() {
+    this.yaRetiroEsteTurno = false;
+    this.yaAtacoEsteTurno = false;
+    // Incluye aquí también el reinicio de energía adjunta si lo manejas en Jugador
+}
 
-
-    public boolean promoverDesdeBanco() {
-        if (this.campo.getPokemonActivo() != null) {
-            return true;
-        }
-        if (this.campo.getBanco().isEmpty()) {
-            return false;
-        }
-        Pokemon promovido = this.campo.getBanco().remove(0);
-        this.campo.colocarActivo(promovido);
-        return true;
+public boolean promoverDeBanca(Pokemon elegido) {
+    if (this.campo.getPokemonActivo() != null) {
+        return false;
     }
+    if (elegido == null || !this.campo.getBanco().contains(elegido)) {
+        return false;
+    }
+    this.campo.getBanco().remove(elegido);
+    this.campo.colocarActivo(elegido); // Usa el setter de activo que tengas en Campo
+    return true;
+}
 
 
     public boolean puedeJugarSoporte() {
@@ -243,6 +245,48 @@ public class Jugador {
         }
     return null;
 }
+
+    public String jugarEntrenador(Entrenador entrenador, Pokemon objetivo) {
+        if (!this.mano.contains(entrenador)) {
+            return "No tienes esa carta en tu mano.";
+        }
+        if (!(entrenador.puedeActivar(this))) {
+            return "No puedes activar " + entrenador.getNombre() + " en este momento.";
+        }
+
+        // Ejecuta la carta pasando el objetivo (será null si no requiere objetivo)
+        String error = entrenador.Activar(this, objetivo);
+        if (error != null) {
+            return error; // Si falló la validación (ej. no es de Agua), no se gasta la carta
+        }
+
+        // Si tuvo éxito, pasa de la mano al descarte
+        this.mano.remove(entrenador);
+        return null;
+    }
+
+    public String adjuntarEnergia(Pokemon objetivo) {
+    if (getEnergiaDisponible() == null) {
+        return "No tienes energía disponible este turno.";
+    }
+    if (objetivo == null) {
+        return "Debes seleccionar un Pokémon en juego.";
+    }
+    objetivo.adjuntarEnergia(getEnergiaDisponible());
+    zonaEnergia.tomarEnergia();
+    return null; // null indica que todo salió bien
+    }
+
+    public void generarEnergiaTurno(int turno) {
+        if(turno > 1){
+        zonaEnergia.generarEnergia();
+        }
+    }
+
+
+    public TipoEnergia getEnergiaDisponible(){
+        return zonaEnergia.getEnergiaActual();
+    }
 
     public String getNombre() {
         return this.nombre;

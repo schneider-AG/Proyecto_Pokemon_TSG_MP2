@@ -11,6 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.PopupMenu;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -34,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import modelo.Carta;
+import modelo.Entrenador;
 import modelo.Jugador;
 import modelo.MotorGrafico;
 import modelo.MotorJuego;
@@ -46,7 +49,7 @@ import modelo.Jugador;
 public class Tablero extends javax.swing.JFrame {
 
     private static final int CARD_WIDTH = 100;
-    private static final int CARD_HEIGHT = 140;
+    private static final int CARD_HEIGHT = 135;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Tablero.class.getName());
     private MotorJuego motor;
@@ -61,30 +64,11 @@ public class Tablero extends javax.swing.JFrame {
     @SuppressWarnings("serial")
     private Image imagenDorsoMazo;
     private double escalaCartas = 1.0;
-
-    MouseAdapter clicEnergia = new MouseAdapter() {
-        //TipoEnergia energiaActual;
-    @Override public void mouseClicked(MouseEvent e) {
-        JLabel origen = (JLabel) e.getSource();
-         // motor.getJugadorActual().getZonaEnergia().getEnergiaActual()
-
-        if(esLabelDeEnergia(origen)){
-            TipoEnergia actual = TipoEnergia.FUEGO;
-        if (actual == null) {
-            registrarEvento("Ya usaste la energía de este turno.");
-            return;
-        }
-        if (origen != labelDe(actual)) {
-            registrarEvento("Esa no es la energía de este turno.");
-            return;
-        }
-        energiaSeleccionada = true;
-        cartaSeleccionada1 = null;
-        //energiaActual = actual;
-        registrarEvento("Energía seleccionada. Elige un Pokémon.");
-        }
-    }
-};
+    private boolean energiaSeleccionada = false;
+    private Carta cartaSeleccionada = null;
+    private boolean esperandoReemplazoBanca = false;
+    private boolean esperandoRetiradaBanca = false;
+    private Entrenador entrenadorPendiente = null;
     
     public void setMotor(MotorJuego motor) {
         this.motor = motor;
@@ -110,7 +94,7 @@ public class Tablero extends javax.swing.JFrame {
 }
 
     private void armarInterfaz() {
-        panelActivoRival = new PokemonPanel(null);
+        panelActivoRival = new PokemonPanel(null, false);
         panelActivoRival.setBackground(panelActivo.getBackground());
         ImageIcon dorso = (ImageIcon) jLabel3.getIcon();
         imagenDorsoMazo = dorso == null ? null : dorso.getImage();
@@ -359,7 +343,8 @@ public class Tablero extends javax.swing.JFrame {
         panel.setPreferredSize(tamano);
         panel.setMinimumSize(tamano);
         panel.setMaximumSize(tamano);
-        revalidate();
+        panel.revalidate();
+        panel.repaint();
     }
 
     private void ajustarTamanoDorso(JLabel etiqueta, int ancho, int alto) {
@@ -396,18 +381,18 @@ public class Tablero extends javax.swing.JFrame {
         panelFondo = new PanelFondo("/Media/Background2.png");
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        panelBanco1 = new PokemonPanel(null);
+        panelBanco1 = new PokemonPanel(null, false);
         jProgressBar7 = new javax.swing.JProgressBar();
-        panelBanco2 = new PokemonPanel(null);
+        panelBanco2 = new PokemonPanel(null, false);
         jProgressBar9 = new javax.swing.JProgressBar();
-        panelBanco3 = new PokemonPanel(null);
+        panelBanco3 = new PokemonPanel(null, false);
         jProgressBar6 = new javax.swing.JProgressBar();
-        panelBanco4 = new PokemonPanel(null);
+        panelBanco4 = new PokemonPanel(null, false);
         jProgressBar1 = new javax.swing.JProgressBar();
         manoRival = new javax.swing.JPanel();
-        panelActivo = new PokemonPanel(null);
+        panelActivo = new PokemonPanel(null, false);
         jProgressBar8 = new javax.swing.JProgressBar();
-        panelBanco5 = new PokemonPanel(null);
+        panelBanco5 = new PokemonPanel(null, false);
         jProgressBar5 = new javax.swing.JProgressBar();
         jLabel5 = new javax.swing.JLabel();
         panelMano = new javax.swing.JPanel();
@@ -435,7 +420,7 @@ public class Tablero extends javax.swing.JFrame {
         jPanel13 = new javax.swing.JPanel();
         btnRendirse = new JButton();
         lblEnergiaPsiquica = new javax.swing.JLabel();
-        PanelPopup panelInformacion = new PanelPopup();
+        panelInformacion = new PanelPopup();
         popup = new JPopupMenu();
         popup.add(panelInformacion.getPanel());
 
@@ -560,9 +545,9 @@ public class Tablero extends javax.swing.JFrame {
 
         btnRendirse.setText("Rendirse");
         btnRendirse.setForeground(new Color(180, 30, 30));
-    btnRendirse.setFont(btnRendirse.getFont().deriveFont(Font.BOLD, 11f));
-    btnRendirse.setMargin(new Insets(2, 8, 2, 8));
-    btnRendirse.setFocusable(false);
+        btnRendirse.setFont(btnRendirse.getFont().deriveFont(Font.BOLD, 11f));
+        btnRendirse.setMargin(new Insets(2, 8, 2, 8));
+        btnRendirse.setFocusable(false);
 
         jPanel15.setVisible(false);
         jPanel16.setVisible(false);
@@ -589,28 +574,13 @@ public class Tablero extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>       
-    private void mostrarMano(java.util.List<modelo.Carta> mano) {
-    panelMano.removeAll();                       // limpia la mano anterior
-    panelMano.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 4, 0));
-    panelMano.setOpaque(false);
 
-    for (Carta carta : mano) {
-        PokemonPanel cp = new PokemonPanel(carta);
-        cp.getCarta().getNombre();   // reemplaza todo el bloque del JLabel
-        cp.addMouseListener(clickTablero);
-        panelMano.add(cp);
-    }
-
-    panelMano.revalidate();   // recalcula el layout
-    panelMano.repaint();      // redibuja
-    ajustarTamanosCartas();
-}
     private void actualizarMano() {
         Jugador jugador = motorGrafico.jugadorActual();   // la misma fuente que usa la validación
 
         panelMano.removeAll();                            // 1. borra lo anterior
         for (Carta carta : jugador.getMano()) {           // 2. una por cada carta del modelo
-            PokemonPanel cp = new PokemonPanel(carta);
+            PokemonPanel cp = new PokemonPanel(carta, true);
             cp.addMouseListener(clickTablero);
             panelMano.add(cp);
         }
@@ -619,21 +589,48 @@ public class Tablero extends javax.swing.JFrame {
         ajustarTamanosCartas();
     }
 
-private void probarMano(Jugador jugador) {
+    private void ejecutarAtaque(int indice) {
+    popup.setVisible(false);
 
-    panelMano.removeAll();
-    panelMano.setLayout(new java.awt.FlowLayout(FlowLayout.CENTER, 4, 0));
-    panelMano.setOpaque(false);
-
-    for (Carta n : jugador.getMano()) {
-        PokemonPanel panel = new PokemonPanel(n);
-        panel.mostrar(n);
-        panelMano.add(panel);
+    String error = motorGrafico.atacar(indice);
+    if (error != null) {
+        JOptionPane.showMessageDialog(this, error);
+        return;
     }
-    panelMano.revalidate();
-    panelMano.repaint();
+
+    registrarEvento(motorGrafico.jugadorActual().getNombre() + " atacó.");
+    actualizar();
+    if (motorGrafico.verificarGanador()) {
+        // Verificar si ya terminó la partida
+        JOptionPane.showMessageDialog(this, motorGrafico.anunciarGanador());
+        Tablero.this.dispose();
+        return;
+    }
+
+    if (motorGrafico.jugadorRival().getCampo().getPokemonActivo() == null) {
+        esperandoReemplazoBanca = true;
+    }
+    actualizarMano();
+    actualizarManoRival();
+    pasarTurno();
 }
 
+    private void iniciarRetirada() {
+        popup.setVisible(false);
+
+    String error = motorGrafico.validarRetirada();
+    if (error != null) {
+        JOptionPane.showMessageDialog(this, error);
+        return;
+    }
+
+    esperandoRetiradaBanca = true;
+    panelBanco1.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+    panelBanco3.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
+
+    registrarEvento("Selecciona un Pokémon de tu banca para completar la retirada.");
+    JOptionPane.showMessageDialog(this, "Haz clic sobre el Pokémon de tu banca que pasará al puesto Activo.");
+}
 
     // Variables declaration - do not modify                     
     private javax.swing.JButton jButton1;
@@ -677,53 +674,18 @@ private void probarMano(Jugador jugador) {
     private javax.swing.JProgressBar jProgressBar9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
+    private PanelPopup panelInformacion;
     private JButton btnRendirse;
     // End of variables declaration        
-    
-    /// Conectar eventos
-    private Carta cartaSeleccionada = null;
-    private boolean energiaSeleccionada = false;
-
-
-    private void actualizarEnergia() {
-        TipoEnergia actual = TipoEnergia.FUEGO; // motor.getJugadorActual().getZonaEnergia().getEnergiaActual();
-        resaltar(lblEnergiaFuego,     actual == TipoEnergia.FUEGO);
-        resaltar(lblEnergiaAgua,      actual == TipoEnergia.AGUA);
-        resaltar(lblEnergiaElectrica, actual == TipoEnergia.ELECTRICO);
-        resaltar(lblEnergiaPsiquica,  actual == TipoEnergia.PSIQUICO);
-    }
-
-    private void resaltar(JLabel lbl, boolean disponible) {
-        JPanel panelAux = (JPanel) lbl.getParent();
-        panelAux.setVisible(disponible);
-    }
-
-    private void usarEnergia(JLabel lbl) {
-        JPanel panelAux = (JPanel) lbl.getParent();
-        panelAux.setVisible(false);
-    }
-
-    private JLabel labelDe(TipoEnergia t) {
-        switch (t) {
-            case FUEGO:     return lblEnergiaFuego;
-            case AGUA:      return lblEnergiaAgua;
-            case ELECTRICO: return lblEnergiaElectrica;
-            default:        return lblEnergiaPsiquica;
-        }
-    }
 
     
     public void registrarEvento(String mensaje) {
         jTextArea1.append(mensaje + "\n");
     }
-
-    private boolean esLabelDeEnergia(Object origen) {
-    return origen == lblEnergiaFuego || origen == lblEnergiaAgua || origen == lblEnergiaElectrica || origen == lblEnergiaPsiquica;
-    }
-
     
     private void pasarTurno(){
         Jugador actual = motorGrafico.jugadorActual();
+        esperandoRetiradaBanca = false;
         if (actual.getCampo().getPokemonActivo() == null) {
             JOptionPane.showMessageDialog(this, "Debes colocar un Pokémon en el puesto Activo antes de pasar el turno.");
             return;
@@ -736,84 +698,296 @@ private void probarMano(Jugador jugador) {
         // 3. Ejecutar el cambio en el motor
         motorGrafico.pasarTurno();
 
+        JOptionPane.showMessageDialog(
+        this,
+        "Turno de " + motorGrafico.jugadorActual().getNombre() + " — presiona Continuar",
+        "Cambio de turno",
+        JOptionPane.INFORMATION_MESSAGE
+        );
+
         // 4. Refrescar toda la interfaz (esto hace que el tablero "gire")
         actualizar();
         actualizarMano();
         actualizarManoRival();
+        limpiarBordesMano();
 
         registrarEvento("Turno " + motorGrafico.getTurno() + " - Juega: " + motorGrafico.jugadorActual().getNombre());
+
+        if (esperandoReemplazoBanca) {
+        panelBanco1.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 3));
+        panelBanco3.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 3));
+        registrarEvento(motorGrafico.jugadorActual().getNombre() + ", tu Pokémon activo fue derrotado. Haz clic en uno de tu banca.");
+
+        JOptionPane.showMessageDialog(
+            this,
+            motorGrafico.jugadorActual().getNombre() + ", tu Pokémon activo fue derrotado.\nHaz clic sobre el Pokémon de tu banca que pasará al puesto Activo.");
+
     }
+}
+
+    private final MouseAdapter clicEnergia = new MouseAdapter() {
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (esperandoReemplazoBanca) {
+            registrarEvento("Primero debes elegir un Pokémon de tu banca para el puesto Activo.");
+            return;
+        }
+        if (motorGrafico.jugadorActual().getEnergiaDisponible() == null) {
+            registrarEvento("No tienes energía disponible este turno.");
+            return;
+        }
+
+        energiaSeleccionada = !energiaSeleccionada;
+        cartaSeleccionada = null;
+        actualizar(); // Muestra u oculta el borde amarillo en jLabel19
+
+        if (energiaSeleccionada) {
+            registrarEvento("Energía seleccionada. Elige un Pokémon de tu campo.");
+        }
+    }
+};
+private void limpiarBordesMano() {
+    for (Component comp : panelMano.getComponents()) {
+        if (comp instanceof PokemonPanel pp) {
+            pp.setBorder(null);
+        }
+    }
+}
 
 private final MouseAdapter clickTablero = new MouseAdapter() {
     @Override
     public void mousePressed(MouseEvent e) {
-        
-        Component origen = (Component)e.getSource();
+        Component origen = (Component) e.getSource();
 
         while (origen != null && !(origen instanceof PokemonPanel)) {
             origen = origen.getParent();
         }
-        if (!(origen instanceof PokemonPanel panelClickeado)){
+
+        PokemonPanel panelClickeado = null;
+        if (origen instanceof PokemonPanel pp) {
+            panelClickeado = pp;
+        }
+
+        Carta cartaClickeada = null;
+        Pokemon objetivo = null;
+
+        if (panelClickeado != null) {
+            cartaClickeada = panelClickeado.getCarta();
+            if (cartaClickeada instanceof Pokemon p) {
+                objetivo = p;
+            }
+        }
+
+        // 1. Reemplazo obligatorio tras KO
+        if (esperandoReemplazoBanca) {
+            entrenadorPendiente = null;
+            if ((panelClickeado == panelBanco1 || panelClickeado == panelBanco3) && objetivo != null) {
+                if (motorGrafico.jugadorActual().promoverDeBanca(objetivo)) {
+                    esperandoReemplazoBanca = false;
+                    cartaSeleccionada = null;
+                    limpiarBordesMano();
+
+                    panelBanco1.setBorder(null);
+                    panelBanco3.setBorder(null);
+
+                    registrarEvento(objetivo.getNombre() + " sube de la banca al puesto Activo.");
+                    actualizar();
+                    actualizarMano();
+                }
+            } else {
+                JOptionPane.showMessageDialog(
+                    Tablero.this,
+                    "Debes hacer clic sobre un Pokémon de tu banca (no de tu mano ni del rival)."
+                );
+            }
             return;
         }
 
-        Jugador jugador = motorGrafico.jugadorActual();
+        // 2. Selección de banca para retirada
+        if (esperandoRetiradaBanca) {
+            entrenadorPendiente = null;
+            if ((panelClickeado == panelBanco1 || panelClickeado == panelBanco3) && objetivo != null) {
+                String error = motorGrafico.retirar(objetivo);
+                esperandoRetiradaBanca = false;
+                panelBanco1.setBorder(null);
+                panelBanco3.setBorder(null);
 
-        // PRIMER CLIC: El jugador tocó una carta en su mano
-        if (panelClickeado.getParent() == panelMano) {
-            Carta carta = panelClickeado.getCarta();
-            String error = motorGrafico.seleccionarCartaMano(carta);
+                if (error != null) {
+                    JOptionPane.showMessageDialog(Tablero.this, error);
+                } else {
+                    registrarEvento(objetivo.getNombre() + " entra al puesto Activo por retirada.");
+                    actualizar();
+                }
+            } else {
+                esperandoRetiradaBanca = false;
+                panelBanco1.setBorder(null);
+                panelBanco3.setBorder(null);
+                registrarEvento("Retirada cancelada.");
+            }
+            return;
+        }
+
+        // 3. Si hay un ENTRENADOR seleccionado (pendiente de 2.º clic)
+        if (entrenadorPendiente != null) {
+            if (!entrenadorPendiente.requiereObjetivoTablero()) {
+                // Sin objetivo (Investigación del Profesor, Poké Ball, Turbo Velocidad):
+                // Solo se activa si hiciste clic en el FONDO (panelClickeado == null)
+                if (panelClickeado == null) {
+                    String error = motorGrafico.jugarEntrenador(entrenadorPendiente, null);
+                    if (error != null) {
+                        JOptionPane.showMessageDialog(Tablero.this, error);
+                    } else {
+                        registrarEvento(motorGrafico.jugadorActual().getNombre() + " jugó " + entrenadorPendiente.getNombre() + ".");
+                        actualizar();
+                        actualizarMano();
+                    }
+                } else {
+                    // Si tocaste la misma carta, otra carta o cualquier PokemonPanel, se deselecciona
+                    registrarEvento("Uso de " + entrenadorPendiente.getNombre() + " cancelado.");
+                }
+            } else {
+                // Con objetivo (Misty, Poción):
+                // Solo se activa si tocaste uno de tus Pokémon en juego (Activo o Banca)
+                boolean esObjetivoValido = (panelClickeado == panelActivo
+                        || panelClickeado == panelBanco1
+                        || panelClickeado == panelBanco3) && objetivo != null;
+
+                if (esObjetivoValido) {
+                    String error = motorGrafico.jugarEntrenador(entrenadorPendiente, objetivo);
+                    if (error != null) {
+                        JOptionPane.showMessageDialog(Tablero.this, error);
+                    } else {
+                        registrarEvento(motorGrafico.jugadorActual().getNombre() + " usó " + entrenadorPendiente.getNombre() + " en " + objetivo.getNombre() + ".");
+                        actualizar();
+                        actualizarMano();
+                    }
+                } else {
+                    // Si tocaste el fondo, la misma carta, un hueco vacío o al rival, se deselecciona
+                    registrarEvento("Uso de " + entrenadorPendiente.getNombre() + " cancelado.");
+                }
+            }
+
+            entrenadorPendiente = null;
+            limpiarBordesMano();
+            return;
+        }
+
+        // 4. PRIMER CLIC: El jugador tocó una carta en su mano (DEBE ir antes de validar esCampoPropio)
+        if (panelClickeado != null && panelClickeado.getParent() == panelMano) {
+            if (cartaClickeada == null) {
+                return;
+            }
+
+            // Si vuelve a tocar la misma carta Pokémon seleccionada, la deselecciona
+            if (cartaClickeada == cartaSeleccionada) {
+                cartaSeleccionada = null;
+                limpiarBordesMano();
+                registrarEvento("Deseleccionaste: " + cartaClickeada.getNombre());
+                return;
+            }
+
+            entrenadorPendiente = null;
+            cartaSeleccionada = null;
+            energiaSeleccionada = false;
+            limpiarBordesMano();
+
+            // Caso A: Carta de Entrenador
+            if (cartaClickeada instanceof Entrenador entrenador) {
+                entrenadorPendiente = entrenador;
+                panelClickeado.setBorder(BorderFactory.createLineBorder(new Color(255, 204, 0), 3));
+                if (entrenador.requiereObjetivoTablero()) {
+                    registrarEvento("Seleccionaste " + entrenador.getNombre() + ". Haz clic en un Pokémon de tu campo (o vuelve a tocarla para cancelar).");
+                } else {
+                    registrarEvento("Seleccionaste " + entrenador.getNombre() + ". Haz clic en el fondo para activarla (o vuelve a tocarla para cancelar).");
+                }
+                return;
+            }
+
+            // Caso B: Carta Pokémon (Básico o Evolución)
+            String error = motorGrafico.seleccionarCartaMano(cartaClickeada);
             if (error != null) {
                 JOptionPane.showMessageDialog(Tablero.this, error);
                 return;
             }
-            cartaSeleccionada = carta;
-            registrarEvento("Seleccionaste: " + carta.getNombre());
+            cartaSeleccionada = cartaClickeada;
+            panelClickeado.setBorder(BorderFactory.createLineBorder(new Color(255, 204, 0), 3));
+            registrarEvento("Seleccionaste: " + cartaClickeada.getNombre());
             return;
         }
 
-        // SEGUNDO CLIC: El jugador tocó Activo o Banca propia
-        if (panelClickeado == panelActivo || panelClickeado == panelBanco1 || panelClickeado == panelBanco3) {
-            Pokemon objetivo = (panelClickeado.getCarta() instanceof Pokemon p) ? p : null;
+        // 5. Si tocó el fondo o cualquier panel fuera de tu campo (ej. rival), deselecciona carta Pokémon
+        boolean esCampoPropio = (panelClickeado == panelActivo
+                || panelClickeado == panelBanco1
+                || panelClickeado == panelBanco3);
 
-            // Si hay carta seleccionada, intenta bajar Básico o Evolucionar
+        if (panelClickeado == null || !esCampoPropio) {
             if (cartaSeleccionada != null) {
-                boolean esActivo = (panelClickeado == panelActivo);
-                String error = motorGrafico.jugarCartaEnCampo(cartaSeleccionada, esActivo, objetivo);
-                if (error != null) {
-                    JOptionPane.showMessageDialog(Tablero.this, error);
-                    return;
-                }
-                registrarEvento("Jugaste: " + cartaSeleccionada.getNombre());
                 cartaSeleccionada = null;
-                actualizar();
-                actualizarMano();
+                limpiarBordesMano();
+                registrarEvento("Selección cancelada.");
+            }
+            return;
+        }
+
+        // 6. SEGUNDO CLIC: El jugador tocó Activo o Banca propia
+        if (cartaSeleccionada != null) {
+            boolean esActivo = (panelClickeado == panelActivo);
+            String error = motorGrafico.jugarCartaEnCampo(cartaSeleccionada, esActivo, objetivo);
+            if (error != null) {
+                JOptionPane.showMessageDialog(Tablero.this, error);
                 return;
             }
+            registrarEvento("Jugaste: " + cartaSeleccionada.getNombre());
+            cartaSeleccionada = null;
+            limpiarBordesMano();
+            actualizar();
+            actualizarMano();
+            return;
+        }
 
-            // Si no hay carta seleccionada y tocó su Activo ocupado, abre el menú de combate
-            if (panelClickeado == panelActivo && objetivo != null) {
-                int x = (panelFondo.getWidth() - popup.getPreferredSize().width) / 2;
-                int y = (panelFondo.getHeight() - popup.getPreferredSize().height) / 2;
-                popup.show(panelFondo, x, y);
-            } else {
-                JOptionPane.showMessageDialog(Tablero.this, "Primero selecciona una carta de tu mano");
+        if (energiaSeleccionada) {
+            if (objetivo == null) {
+                JOptionPane.showMessageDialog(Tablero.this, "Selecciona un Pokémon en tu campo para adjuntar la energía.");
+                return;
             }
+            String error = motorGrafico.adjuntarEnergia(objetivo);
+            if (error != null) {
+                JOptionPane.showMessageDialog(Tablero.this, error);
+                return;
+            }
+            energiaSeleccionada = false;
+            registrarEvento("Energía adjuntada a " + objetivo.getNombre() + ".");
+            actualizar();
+            return;
+        }
+
+        if (panelClickeado == panelActivo && objetivo != null) {
+            panelInformacion.cargarPokemon(objetivo);
+            int x = (panelFondo.getWidth() - popup.getPreferredSize().width) / 2;
+            int y = (panelFondo.getHeight() - popup.getPreferredSize().height) / 2;
+            popup.show(panelFondo, x, y);
+        } else {
+            JOptionPane.showMessageDialog(Tablero.this, "Primero selecciona una carta de tu mano");
         }
     }
-
 };
 
-private boolean esPanelBanco(Object origen) {
-    return origen == panelBanco1 || origen == panelBanco3;
-}
-
 private void conectarEventos() {
+    panelFondo.addMouseListener(clickTablero);
+    panelMano.addMouseListener(clickTablero);
     panelActivo.addMouseListener(clickTablero);
     panelBanco1.addMouseListener(clickTablero);
     panelBanco3.addMouseListener(clickTablero);
+    panelActivoRival.addMouseListener(clickTablero);
+    panelBanco4.addMouseListener(clickTablero);
+    panelBanco5.addMouseListener(clickTablero);
+
+    jLabel19.addMouseListener(clicEnergia);
     jButton1.addActionListener(e -> pasarTurno());
     btnRendirse.addActionListener(e -> rendirse());
+    panelInformacion.getBttnAtaque1().addActionListener(e -> ejecutarAtaque(0));
+    panelInformacion.getBttnAtaque2().addActionListener(e -> ejecutarAtaque(1));
+    panelInformacion.getBttnRetirar().addActionListener(e -> iniciarRetirada());
 }
     private void actualizarManoRival() {
     Jugador rival = motorGrafico.jugadorRival();
@@ -863,13 +1037,28 @@ private void conectarEventos() {
         jLabel10.setText("Número de cartas: " + rival.getMazo().getCantidadCartas());
         jLabel9.setText("Número de cartas: " + propio.getMazo().getCantidadCartas());
 
+        TipoEnergia disponible = propio.getEnergiaDisponible();
+        IconosEnergia iconosEnergia = new IconosEnergia();
+
+        if (disponible == null) {
+            jLabel19.setIcon(null);
+            jLabel19.setText("No hay energía");
+            jLabel19.setBorder(null);
+        } else {
+            jLabel19.setText("");
+            ImageIcon icon = new ImageIcon(iconosEnergia.getRutaEnergia(disponible));
+            jLabel19.setIcon(icon);
+            jLabel19.setBorder(energiaSeleccionada
+                    ? BorderFactory.createLineBorder(new Color(255, 204, 0), 2, true)
+                    : null);
+        }
+
         ajustarTamanosCartas();
     }
 
-    private void mostrarBanca(java.util.List<Pokemon> banco, PokemonPanel... espacios) {
-        for (int i = 0; i < espacios.length; i++) {
-            espacios[i].mostrar(i < banco.size() ? banco.get(i) : null);
-        }
+    private void mostrarBanca(java.util.List<Pokemon> banco, PokemonPanel primero, PokemonPanel segundo) {
+        primero.mostrar(banco.size() > 0 ? banco.get(0) : null);
+        segundo.mostrar(banco.size() > 1 ? banco.get(1) : null);
     }
 
 };

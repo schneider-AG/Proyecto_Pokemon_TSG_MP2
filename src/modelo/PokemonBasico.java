@@ -1,9 +1,9 @@
 package modelo;
 public class PokemonBasico extends Pokemon{
 
-    public PokemonBasico(String nombre, TipoEnergia tipo, short psMaximo, short psActual, 
+    public PokemonBasico(String nombre, String rutaImagen, TipoEnergia tipo, short psMaximo, short psActual, 
         byte costoRetirada) {
-        super(nombre, tipo, psMaximo, psActual, costoRetirada);
+        super(nombre, rutaImagen, tipo, psMaximo, psActual, costoRetirada);
     }
 
     @Override

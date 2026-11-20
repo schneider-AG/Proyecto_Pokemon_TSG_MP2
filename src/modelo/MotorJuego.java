@@ -39,9 +39,6 @@ public boolean iniciarPartida() {
         return false;
     }
 
-    jugador1.generarEnergiaTurno();
-    jugador2.generarEnergiaTurno();
-
     System.out.println("La partida ha comenzado");
     return true;
 }
@@ -118,7 +115,7 @@ private void ejecutarTurno(
 
     jugadorActual.robarCarta();
 
-    jugadorActual.generarEnergiaTurno();
+    //jugadorActual.generarEnergiaTurno();
 
     boolean terminarTurno = false;
 
@@ -163,14 +160,16 @@ private void ejecutarTurno(
         } while (opcionEnergia < 1 || opcionEnergia > propios.size());
 
         Pokemon objetivoEnergia = propios.get(opcionEnergia - 1);
-
+/*
         if (jugadorActual.adjuntarEnergia(objetivoEnergia)) {
             System.out.println("Energia adjuntada correctamente.");
         } else {
             System.out.println("No fue posible adjuntar energia.");
         }
         break;
+        */
     }
+
 
     case 2:
 
@@ -229,9 +228,8 @@ private void ejecutarTurno(
                         jugadorActual
                     )) {
 
-                    entrenador.Activar(
-                        jugadorActual
-                    );
+                    //entrenador.Activar(
+
 
                     mano.remove(i);
 

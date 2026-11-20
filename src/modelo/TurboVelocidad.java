@@ -4,7 +4,9 @@ public class TurboVelocidad extends Objeto {
     public TurboVelocidad() {
         super(
             "Turbo Velocidad",
-            "Reduce en 1 el costo de retirada del Pokemon activo"
+            "/Cartas_POCKETCG/Turbo_Velocidad.png",
+            "Reduce en 1 el costo de retirada del Pokemon activo",
+            false
         );
     }
 
@@ -17,16 +19,14 @@ public class TurboVelocidad extends Objeto {
     }
 
     @Override
-    public Void Activar(Jugador jugador) {
+    public String Activar(Jugador jugador, Pokemon objetivo) {
 
         if (!puedeActivar(jugador)) {
-            return null;
+            return "No puedes activar " + getNombre() + " en este momento.";
         }
 
         Pokemon activo = jugador.getCampo().getPokemonActivo();
         jugador.activarTurboVelocidad();
-        System.out.println("Turbo Velocidad redujo en 1 la retirada de " + activo.getNombre()
-            + " durante este turno.");
 
         return null;
     }

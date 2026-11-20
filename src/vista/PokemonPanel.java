@@ -4,20 +4,41 @@ import modelo.Carta;
 import modelo.Entrenador;
 import modelo.Pokemon;
 import modelo.Soporte;
+import modelo.TipoEnergia;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.w3c.dom.events.MouseEvent;
 
 
-public class PokemonPanel extends javax.swing.JPanel {
+public class PokemonPanel extends JPanel {
 
     private Carta carta;
+
+    private static final int ALTO_BARRA = 14;
+    private static final int ESPACIO = 2;
+    private final List<TipoEnergia> tiposEnPanel = new ArrayList<>();
+    private final List<JLabel> labelsEnergia = new ArrayList<>();
+    private boolean modoMano = false;
+    private Image imagenFondo;
     
     public Carta getCarta() {
         return carta;
@@ -26,11 +47,60 @@ public class PokemonPanel extends javax.swing.JPanel {
     /**
      * Creates new form NewJPanel
      */
-    public PokemonPanel(Carta carta) {
+    public PokemonPanel(Carta carta, boolean modoMano) {
         this.carta = carta;
+        this.modoMano = modoMano;
         initComponents();
+        setOpaque(true);
         mostrar(carta);
     }
+
+    /** Panel (centrado) donde se agregan los labels de energía. */
+    public JPanel getPanelEnergia() {
+        return panelEnergia;
+    }
+
+    /**
+     * Lado de cada label de energía: cuadrado, que quepan 3 en una fila y que
+     * entre en el alto que la cuadrícula le dio al panel.
+     */
+    public int getLadoEnergia(int cantidad) {
+        int columnas = (Math.max(3, cantidad));
+
+        int anchoDisponible;
+        if (panelEnergia.getWidth() > 0) {
+            anchoDisponible = panelEnergia.getWidth();
+        } else {
+            anchoDisponible = getPreferredSize().width - 4;
+        }
+
+        int porAlto;
+        if (panelEnergia.getHeight() > 0) {
+            porAlto = panelEnergia.getHeight() - 2;
+        } else {
+            porAlto = 20;
+        }
+
+        int porAncho = (anchoDisponible - (columnas + 1) * ESPACIO) / columnas;
+        return Math.max(10, Math.min(porAncho, porAlto));
+    }
+
+    @Override
+protected void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    if (imagenFondo != null) {
+        g.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
+    }
+}
+
+public void setImagen(ImageIcon icono) {
+    if (icono != null) {
+        this.imagenFondo = icono.getImage();
+    } else {
+        this.imagenFondo = null;
+    }
+    repaint();
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -41,87 +111,131 @@ public class PokemonPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        lblEtapa = new javax.swing.JLabel();
         barraPs = new javax.swing.JProgressBar();
-        lblNombre = new javax.swing.JLabel();
-        lblEnergia = new javax.swing.JLabel();
+        panelEnergia = new JPanel();
 
-        setPreferredSize(new java.awt.Dimension(50, 70));
-
-        lblEtapa.setText("jLabel1");
-
-        barraPs.setPreferredSize(new java.awt.Dimension(40, 4));
-
-        lblNombre.setText("jLabel2");
-
-        lblEnergia.setText("jLabel3");
+        setPreferredSize(new Dimension(100, 140));
+        setLayout(new BorderLayout());
 
 
+        panelEnergia.setOpaque(false);
+        panelEnergia.setLayout(new FlowLayout(FlowLayout.CENTER, ESPACIO, 1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblEtapa)
-                    .addComponent(lblNombre)
-                    .addComponent(lblEnergia))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(barraPs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(lblEtapa)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblNombre)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblEnergia)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(barraPs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-    }// </editor-fold>     
+        barraPs.setBackground(new Color(0, 204, 51));
+        barraPs.setPreferredSize(new Dimension(0, ALTO_BARRA));
     
-        public void mostrar(Carta c) {
+        JPanel panelInferior = new JPanel(new BorderLayout(0, 2));
+        panelInferior.setOpaque(false);
+        panelInferior.setBorder(BorderFactory.createEmptyBorder(0, 2, 4, 2));
+        panelInferior.add(panelEnergia, BorderLayout.NORTH);
+        panelInferior.add(barraPs, BorderLayout.SOUTH);
+
+        add(panelInferior, BorderLayout.SOUTH);
+    }
+
+    private void actualizarEnergias(Pokemon p) {
+        if (p == null) {
+            tiposEnPanel.clear();
+            labelsEnergia.clear();
+            panelEnergia.removeAll();
+            return;
+        }
+
+        // 1. Elimina de panelEnergia los tipos que ya no tenga el Pokémon
+        for (int i = tiposEnPanel.size() - 1; i >= 0; i--) {
+            if (!p.getEnergias().contains(tiposEnPanel.get(i))) {
+                panelEnergia.remove(labelsEnergia.get(i));
+                tiposEnPanel.remove(i);
+                labelsEnergia.remove(i);
+            }
+        }
+
+        // 2. Si el tipo ya está en panelEnergia, solo actualiza el número con setText;
+        //    si es un tipo nuevo (máximo 3), crea el JLabel con su ícono y lo agrega centrado.
+        int lado = getLadoEnergia(p.getEnergias().size());
+
+        for (TipoEnergia tipo : p.getEnergias()) {
+            int cantidad = contarEnergias(p, tipo);
+            int indice = tiposEnPanel.indexOf(tipo);
+
+            if (indice != -1) {
+                labelsEnergia.get(indice).setText(String.valueOf(cantidad));
+            } else if (tiposEnPanel.size() < 3) {
+                Image img = new ImageIcon(new IconosEnergia().getRutaEnergia(tipo))
+                        .getImage()
+                        .getScaledInstance(lado, lado, Image.SCALE_SMOOTH);
+
+                JLabel lblNuevo = new JLabel(String.valueOf(cantidad), new ImageIcon(img), JLabel.CENTER);
+                lblNuevo.setFont(new Font("SansSerif", Font.BOLD, 10));
+                lblNuevo.setIconTextGap(1);
+
+                tiposEnPanel.add(tipo);
+                labelsEnergia.add(lblNuevo);
+                panelEnergia.add(lblNuevo);
+            }
+        }
+    }
+
+    private int contarEnergias(Pokemon p, TipoEnergia buscada) {
+        int total = 0;
+        for (TipoEnergia t : p.getEnergias()) {
+            if (t == buscada) {
+                total++;
+            }
+        }
+        return total;
+    }
+
+    private void cargarImagenCarta(Carta c) {
+    if (c == null || c.getRutaImagen() == null) {
+        setImagen(null);
+        return;
+    }
+
+    // Busca el archivo dentro de src/Media/... igual que en Tablero
+    java.net.URL url = getClass().getResource(c.getRutaImagen());
+    if (url != null) {
+        setImagen(new ImageIcon(url));
+    } else {
+        setImagen(null);
+    }
+}
+    
+    public void mostrar(Carta c) {
     this.carta = c;
 
     if (c == null) {
-        lblNombre.setText("[Espacio vacío]");
-        lblEtapa.setText(" ");
+        this.imagenFondo = null;
         barraPs.setVisible(false);
-        lblEnergia.setText(" ");
+        actualizarEnergias(null);
+        return;
+    }
+    cargarImagenCarta(c);
 
+    if(modoMano){
+
+        barraPs.setVisible(false);
+        actualizarEnergias(null);
     } else if (c instanceof Pokemon) {
         Pokemon p = (Pokemon) c;
-        lblNombre.setText(p.getNombre());
-        lblEtapa.setText(p.getEtapa());
         barraPs.setVisible(true);
         barraPs.setMaximum(p.getPsMaximo());
         barraPs.setValue(p.getPsActual());
-        lblEnergia.setText(p.getEnergias().isEmpty() ? "Sin energía" : p.getEnergias().toString());
-
+        barraPs.setStringPainted(true);
+        barraPs.setString(p.getPsActual() + " / " + p.getPsMaximo());
+        actualizarEnergias(p);
     } else if (c instanceof Entrenador) {
         Entrenador e = (Entrenador) c;
-        lblNombre.setText(e.getNombre());
-        lblEtapa.setText(e instanceof Soporte ? "Soporte" : "Objeto");
         barraPs.setVisible(false);
-        lblEnergia.setText("<html>" + e.getDescripcion() + "</html>");
+        actualizarEnergias(null);
     }
 
     revalidate();
     repaint();
 }
 
-
-    // Variables declaration - do not modify                     
-    private javax.swing.JLabel lblEtapa;
-    private javax.swing.JLabel lblNombre;
-    private javax.swing.JLabel lblEnergia;
+    // Variables declaration - do not modify    
+    private JPanel panelEnergia;                 
     private javax.swing.JProgressBar barraPs;
     // End of variables declaration                   
 }

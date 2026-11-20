@@ -1,8 +1,12 @@
 package vista;
 
+import java.awt.FlowLayout;
 import java.awt.Panel;
 
 import javax.swing.JPanel;
+
+import modelo.Ataque;
+import modelo.Pokemon;
 
 public class PanelPopup extends javax.swing.JFrame {
     
@@ -24,11 +28,12 @@ public class PanelPopup extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
+        panelEnergias = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 2));
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        bttnAtaque1 = new javax.swing.JButton();
+        bttnAtaque2 = new javax.swing.JButton();
+        bttnRetirar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -37,17 +42,17 @@ public class PanelPopup extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setText("Pokemon");
 
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton2.setText("Ataque 1");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        bttnAtaque1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        bttnAtaque1.setText("Ataque 1");
+        bttnAtaque1.addActionListener(this::jButton2ActionPerformed);
 
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton3.setText("Ataque 2");
-        jButton3.addActionListener(this::jButton3ActionPerformed);
+        bttnAtaque2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        bttnAtaque2.setText("Ataque 2");
+        bttnAtaque2.addActionListener(this::jButton3ActionPerformed);
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setText("Retirada");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        bttnRetirar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        bttnRetirar.setText("Retirada");
+        bttnRetirar.addActionListener(this::jButton1ActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -61,9 +66,9 @@ public class PanelPopup extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(77, 77, 77)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(bttnAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bttnAtaque1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bttnRetirar, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(73, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -72,11 +77,11 @@ public class PanelPopup extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(88, 88, 88)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bttnAtaque1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bttnAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bttnRetirar, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
@@ -116,12 +121,45 @@ public class PanelPopup extends javax.swing.JFrame {
         // TODO add your handling code here:
     }                                        
 
+    // Ejemplo dentro de PanelPopup.java
+    public void cargarPokemon(Pokemon p) {
+        jLabel1.setText(p.getNombre());
+        // 1. Mostrar ataque 1 (siempre existe)
+        Ataque atk1 = p.getAtaques().get(0);
+        bttnAtaque1.setText(atk1.getNombre() + " (" + atk1.getDanioBase() + ")");
+
+        // 2. Mostrar ataque 2 solo si el Pokémon tiene un segundo ataque
+        if (p.getAtaques().size() > 1) {
+            Ataque atk2 = p.getAtaques().get(1);
+            bttnAtaque2.setText(atk2.getNombre() + " (" + atk2.getDanioBase() + ")");
+            bttnAtaque2.setVisible(true);
+        } else {
+            bttnAtaque2.setVisible(false);
+        }
+
+        // 3. Mostrar coste de retirada
+        bttnRetirar.setText("Retirar(Costo " + p.getCostoRetirada() + ")");
+        bttnRetirar.setFont(new java.awt.Font("Segoe UI", 0, 14));
+    }
+
+    public javax.swing.JButton getBttnRetirar() {
+        return bttnRetirar;
+    }
+
+    public javax.swing.JButton getBttnAtaque1() {
+        return bttnAtaque1;
+    }
+
+    public javax.swing.JButton getBttnAtaque2() {
+        return bttnAtaque2;
+    }
 
     // Variables declaration - do not modify                     
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton bttnRetirar;
+    private javax.swing.JButton bttnAtaque1;
+    private javax.swing.JButton bttnAtaque2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private JPanel panelEnergias;
     // End of variables declaration                   
 }

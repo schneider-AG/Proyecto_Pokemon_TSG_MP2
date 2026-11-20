@@ -4,7 +4,9 @@ public class Misty extends Soporte {
     public Misty() {
         super(
             "Misty",
-            "Adjunta hasta 3 energias Agua a un Pokemon de Agua"
+            "/Cartas_POCKETCG/Misty.png",
+            "Adjunta hasta 3 energias Agua a un Pokemon de Agua",
+            true
         );
     }
 
@@ -18,38 +20,33 @@ public Boolean puedeActivar(Jugador jugador) {
     if (!jugador.puedeJugarSoporte()) {
         return false;
     }
-
-    Pokemon activo =
-        jugador.getCampo().getPokemonActivo();
-
-    return activo != null &&
-        activo.getTipo() == TipoEnergia.AGUA;
+    
+    return true;
 }
 
 @Override
-public Void Activar(Jugador jugador) {
-
-    if (jugador == null) {
-        return null;
+public String Activar(Jugador jugador, Pokemon objetivo) {
+    if (!puedeActivar(jugador)) {
+        return "No puedes activar " + getNombre() + " en este momento.";
     }
+    boolean esPropio = (objetivo != null) &&
+            (objetivo == jugador.getCampo().getPokemonActivo() || jugador.getCampo().getBanco().contains(objetivo));
 
-    Pokemon activo =
-        jugador.getCampo().getPokemonActivo();
+        if (!esPropio) {
+            return "Debes hacer clic sobre uno de tus propios Pokémon (Activo o Banca).";
+        }
 
-    if (activo != null &&
-        activo.getTipo() == TipoEnergia.AGUA) {
+    if (objetivo != null &&
+        objetivo.getTipo() == TipoEnergia.AGUA) {
 
-        activo.adjuntarEnergia(TipoEnergia.AGUA);
-        activo.adjuntarEnergia(TipoEnergia.AGUA);
-        activo.adjuntarEnergia(TipoEnergia.AGUA);
+        objetivo.adjuntarEnergia(TipoEnergia.AGUA);
+        objetivo.adjuntarEnergia(TipoEnergia.AGUA);
+        objetivo.adjuntarEnergia(TipoEnergia.AGUA);
         jugador.registrarSoporte();
 
-        System.out.println(
-            "Misty adjunto 3 energias Agua"
-        );
+        return null;
+        } else{
+            return objetivo.getNombre() + " no es de tipo agua";
+        }  
     }
-
-    return null;
-}
-
 }

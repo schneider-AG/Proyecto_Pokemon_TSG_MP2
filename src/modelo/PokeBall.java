@@ -6,7 +6,9 @@ public class PokeBall extends Objeto {
     public PokeBall() {
         super(
             "Poke Ball",
-            "Busca un Pokemon basico y lo agrega a la mano"
+            "/Cartas_POCKETCG/Poke_Ball.png",
+            "Busca un Pokemon basico y lo agrega a la mano",
+            false
         );
     }
 
@@ -16,10 +18,10 @@ public class PokeBall extends Objeto {
     }
 
 @Override
-public Void Activar(Jugador jugador) {
+public String Activar(Jugador jugador, Pokemon objetivo) {
 
-    if (jugador == null) {
-        return null;
+    if (!puedeActivar(jugador)) {
+        return "No puedes activar " + getNombre() + " en este momento.";
     }
 
     List<Carta> cartas =
@@ -35,20 +37,12 @@ public Void Activar(Jugador jugador) {
 
             cartas.remove(i);
 
-            System.out.println(
-                "Poke Ball agrego "
-                + carta.getNombre()
-                + " a la mano"
-            );
+            jugador.getMazo().barajar();
 
             return null;
         }
     }
 
-    System.out.println(
-        "No se encontro Pokemon basico"
-    );
-
-    return null;
+    return "No se encontro una carta basica.";
 }
 }

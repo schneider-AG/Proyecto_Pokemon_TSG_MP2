@@ -17,6 +17,7 @@ public class MotorGrafico {
     private boolean partidaTerminada = false;
     private Jugador ganador = null;
 
+
     public MotorGrafico(
         Jugador jugador1,
         Jugador jugador2
@@ -32,9 +33,6 @@ public boolean iniciarPartida() {
 
     jugador1.robarManoInicial();
     jugador2.robarManoInicial();
-
-    jugador1.generarEnergiaTurno();
-    jugador2.generarEnergiaTurno();
 
     jugador1.iniciarTurno(false, this.turno);
     return true;
@@ -93,12 +91,13 @@ public boolean iniciarPartida() {
         Jugador actual = jugadorActual();
         actual.iniciarTurno();
         actual.robarCarta();
-        actual.generarEnergiaTurno();
+        actual.generarEnergiaTurno(this.turno);
     }
 
     public boolean esPrimerTurno(){
         return turno <=2 ;
     }
+
 
 private void ejecutarTurno(
     Jugador jugadorActual,
@@ -109,26 +108,22 @@ private void ejecutarTurno(
 
     jugadorActual.robarCarta();
 
-    jugadorActual.generarEnergiaTurno();
+    jugadorActual.generarEnergiaTurno(this.turno);
 
     boolean terminarTurno = false;
 }
 
 
-    public boolean adjuntarEnergia(Pokemon objetivo){
+    public String adjuntarEnergia(Pokemon objetivo){
+        if(partidaTerminada){
+            return "La partida ya termino.";
+        }
         return jugadorActual().adjuntarEnergia(objetivo);
     }
 
-    public boolean jugarEntrenador(Entrenador entrenador){
-
-        if (entrenador.puedeActivar(jugadorActual())) {
-            entrenador.Activar(jugadorActual());
-            jugadorActual().getMano().remove(entrenador);
-            return true;
-        }
-        return false;
-    }
-
+public String jugarEntrenador(Entrenador entrenador, Pokemon objetivo) {
+    return jugadorActual().jugarEntrenador(entrenador, objetivo);
+}
     public boolean colocarPokemonEnBanca(Carta carta){
         if (carta instanceof Pokemon &&
             carta.esPokemonBasico()) {
@@ -141,8 +136,59 @@ private void ejecutarTurno(
         return jugadorActual().retirarPokemonActivo(nuevoActivo);
     }
 
-    public String atacar(Ataque ataqueSeleccionado){
-        boolean resultado = jugadorActual().atacar(ataqueSeleccionado, jugadorRival());
+    // 1. Validar antes de pedirle el clic al usuario (cumple RF9 de explicar acciones inválidas)
+public String validarRetirada() {
+    if (jugadorActual().isYaRetiroEsteTurno()) {
+        return "Ya retiraste un Pokémon en este turno.";
+    }
+    Pokemon activo = jugadorActual().getCampo().getPokemonActivo();
+    if (activo == null) {
+        return "No tienes un Pokémon activo.";
+    }
+    if (jugadorActual().getCampo().getBanco().isEmpty()) {
+        return "No tienes Pokémon en la banca para realizar el cambio.";
+    }
+    int costo = activo.getCostoRetirada(); // Usa el getter de retirada de tu clase Pokemon
+    if (activo.getEnergias().size() < costo) {
+        return activo.getNombre() + " necesita " + costo + " energía(s) para retirarse.";
+    }
+    return null; // null = cumple todas las condiciones
+}
+
+// 2. Descartar energías e intercambiar Activo <-> Banca en el modelo
+public String retirar(Pokemon elegidoBanca) {
+    CampoDeBatalla campoAux = jugadorActual().getCampo() ;
+    String error = validarRetirada();
+    if (error != null) {
+        return error;
+    }
+    if (elegidoBanca == null || !campoAux.getBanco().contains(elegidoBanca)) {
+        return "Debes elegir un Pokémon válido de tu banca.";
+    }
+
+    Pokemon activoAnterior = campoAux.getPokemonActivo();
+    int costo = activoAnterior.getCostoRetirada();
+
+    // Descartar la cantidad de energías del costo de retirada
+    for (int i = 0; i < costo; i++) {
+        activoAnterior.getEnergias().remove(0);
+    }
+
+    // Intercambiar posiciones en Campo (el activo pasa a la banca conservando daño y energías restantes)
+    campoAux.getBanco().remove(elegidoBanca);
+    campoAux.getBanco().add(activoAnterior);
+    campoAux.colocarActivo(elegidoBanca); // Usa tu setter de activo en Campo
+
+    jugadorActual().setYaRetiroEsteTurno(true);
+    return null;
+}
+
+    public String atacar(int indiceAtaque){
+        List<Ataque> ataques = jugadorActual().getCampo().getPokemonActivo().getAtaques();
+        boolean resultado = jugadorActual().atacar(ataques.get(indiceAtaque), jugadorRival());
+        if(turno <= 1){
+            return "No se puede atacar en el primer turno.";
+        }
         if (!resultado) {
             return "No fue posible atacar (revisa tus energías).";
         }
@@ -151,7 +197,6 @@ private void ejecutarTurno(
             anunciarGanador();
             return "FIN_PARTIDA";
         }
-        cambiarTurno();
         prepararTurno();
         return null;
     }
@@ -201,41 +246,34 @@ private void evolucionarPokemon(Jugador jugador) {
     }
 }
 
+public Jugador obtenerGanador() {
+    if (jugador1.gano() || !jugador2.tienePokemonEnJuego()) {
+        return jugador1;
+    }
+    if (jugador2.gano() || !jugador1.tienePokemonEnJuego()) {
+        return jugador2;
+    }
+    return null; // La partida sigue
+}
+
 public boolean verificarGanador() {
-
-    if (jugador1.gano()) {
-        return true;
-    }
-
-    if (jugador2.gano()) {
-        return true;
-    }
-
-    if (!jugador1.tienePokemonEnJuego()) {
-        return true;
-    }
-
-    if (!jugador2.tienePokemonEnJuego()) {
-        return true;
-    }
-
-    return false;
+    return obtenerGanador() != null;
 }
 
-private String anunciarGanador() {
+    public String anunciarGanador() {
 
-    if (!jugador1.tienePokemonEnJuego() && !jugador2.tienePokemonEnJuego()) {
-        return "La partida no tiene ganador: ninguno de los jugadores tiene Pokemon en juego.";
+        if (!jugador1.tienePokemonEnJuego() && !jugador2.tienePokemonEnJuego()) {
+            return "La partida no tiene ganador: ninguno de los jugadores tiene Pokemon en juego.";
+        }
+
+        if (jugador1.gano() ||
+            !jugador2.tienePokemonEnJuego()) {
+
+            return jugador1.getNombre() + " ha ganado la partida.";
+        }
+
+        return jugador2.getNombre() + " ha ganado la partida";
     }
-
-    if (jugador1.gano() ||
-        !jugador2.tienePokemonEnJuego()) {
-
-        return jugador1.getNombre() + " ha ganado la partida.";
-    }
-
-    return jugador2.getNombre() + " ha ganado la partida";
-}
 
 public String seleccionarCartaMano(Carta carta) {
     Jugador actual = jugadorActual();

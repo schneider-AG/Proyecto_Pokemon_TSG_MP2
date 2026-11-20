@@ -11,8 +11,8 @@ public abstract class Pokemon extends Carta{
     private int turnoEntrada;
     private int turnoUltimaEvolucion = -1;
 
-    public Pokemon(String nombre, TipoEnergia tipo, short psMaximo, short psActual, byte costoRetirada) {
-        super(nombre);
+    public Pokemon(String nombre, String rutaImagen, TipoEnergia tipo, short psMaximo, short psActual, byte costoRetirada) {
+        super(nombre, rutaImagen);
         this.tipo = tipo;
         this.psMaximo = psMaximo;
         this.psActual = psActual;
@@ -142,7 +142,7 @@ public abstract class Pokemon extends Carta{
         return energias;
     }
     public void setCostoRetirada(byte costoRetirada) {
-    this.costoRetirada = costoRetirada;
+        this.costoRetirada = costoRetirada;
     }
     
     public abstract byte getPuntosPremio();

@@ -96,6 +96,7 @@ public class CatalogoCartas {
 private PokemonFase1 crearRaichu() {
     PokemonFase1 p = new PokemonFase1(
         "Raichu", 
+        "/Cartas_POCKETCG/Raichu.png",
         TipoEnergia.ELECTRICO, 
         (short)100, 
         (short)100, 
@@ -111,7 +112,8 @@ private PokemonFase1 crearRaichu() {
 }
 private PokemonFase1 crearCharmeleon() {
     PokemonFase1 p = new PokemonFase1(
-        "Charmeleon", 
+        "Charmeleon",
+        "/Cartas_POCKETCG/Charmeleon.png",
         TipoEnergia.FUEGO, 
         (short)90, 
         (short)90, 
@@ -126,6 +128,7 @@ private PokemonFase1 crearCharmeleon() {
 private PokemonFase2 crearCharizard() {
     PokemonFase2 p = new PokemonFase2(
         "Charizard", 
+        "/Cartas_POCKETCG/Charizard.png",
         TipoEnergia.FUEGO, 
         (short)150, 
         (short)150, 
@@ -140,6 +143,7 @@ private PokemonFase2 crearCharizard() {
 private PokemonFase1 crearWartortle() {
     PokemonFase1 p = new PokemonFase1(
         "Wartortle", 
+        "/Cartas_POCKETCG/Wartortle.png",
         TipoEnergia.AGUA, 
         (short)80, 
         (short)80, 
@@ -152,7 +156,9 @@ private PokemonFase1 crearWartortle() {
         40)); return p;
 }
 private PokemonFase2 crearBlastoise() {
-    PokemonFase2 p = new PokemonFase2("Blastoise", 
+    PokemonFase2 p = new PokemonFase2(
+    "Blastoise", 
+    "/Cartas_POCKETCG/Blastoise.png",
     TipoEnergia.AGUA,
     (short)150,
     (short)150,
@@ -167,6 +173,7 @@ private PokemonFase2 crearBlastoise() {
 private PokemonFase1 crearWigglytuff() {
     PokemonFase1 p = new PokemonFase1(
         "Wigglytuff",
+        "/Cartas_POCKETCG/Wigglytuff.png",
         TipoEnergia.INCOLORO, 
         (short)110,
         (short)110, 
@@ -181,6 +188,7 @@ private PokemonFase1 crearWigglytuff() {
 private PokemonFase1 crearGyarados() {
     PokemonFase1 p = new PokemonFase1(
         "Gyarados",
+        "/Cartas_POCKETCG/Gyarados.png",
         TipoEnergia.AGUA, 
         (short)150,
         (short)150, 
@@ -199,6 +207,7 @@ private PokemonBasico crearCharmander() {
     PokemonBasico charmander =
         new PokemonBasico(
             "Charmander",
+            "/Cartas_POCKETCG/Charmander.png",
             TipoEnergia.FUEGO,
             (short)60,
             (short)60,
@@ -231,6 +240,7 @@ private PokemonBasico crearSquirtle() {
     PokemonBasico squirtle =
         new PokemonBasico(
             "Squirtle",
+            "/Cartas_POCKETCG/Squirtle.png",
             TipoEnergia.AGUA,
             (short)60,
             (short)60,
@@ -263,6 +273,7 @@ private PokemonBasico crearPikachu() {
     PokemonBasico pikachu =
         new PokemonBasico(
             "Pikachu",
+            "/Cartas_POCKETCG/Pikachu.png",
             TipoEnergia.ELECTRICO,
             (short)60,
             (short)60,
@@ -295,6 +306,7 @@ private PokemonEx crearMewtwoEx() {
     PokemonEx mewtwo =
         new PokemonEx(
             "Mewtwo ex",
+            "/Cartas_POCKETCG/Mewtwo_ex.png",
             TipoEnergia.PSIQUICO,
             (short)150,
             (short)150,
@@ -327,6 +339,7 @@ private PokemonEx crearZapdosEx() {
     PokemonEx zapdos =
         new PokemonEx(
             "Zapdos ex",
+            "/Cartas_POCKETCG/Zapdos_ex.png",
             TipoEnergia.ELECTRICO,
             (short)130,
             (short)130,
@@ -359,6 +372,7 @@ private PokemonBasico crearMagikarp() {
     PokemonBasico magikarp =
         new PokemonBasico(
             "Magikarp",
+            "/Cartas_POCKETCG/Magikarp.png",
             TipoEnergia.AGUA,
             (short)30,
             (short)30,
@@ -391,6 +405,7 @@ private PokemonBasico crearJigglypuff() {
     PokemonBasico jigglypuff =
         new PokemonBasico(
             "Jigglypuff",
+            "/Cartas_POCKETCG/Jigglypuff.png",
             TipoEnergia.INCOLORO,
             (short)70,
             (short)70,
@@ -423,6 +438,7 @@ private PokemonBasico crearSnorlax() {
     PokemonBasico snorlax =
         new PokemonBasico(
             "Snorlax",
+            "/Cartas_POCKETCG/Snorlax.png",
             TipoEnergia.INCOLORO,
             (short)150,
             (short)150,
@@ -455,6 +471,7 @@ private PokemonEx crearMoltresEx() {
     PokemonEx moltres =
         new PokemonEx(
             "Moltres ex",
+            "/Cartas_POCKETCG/Moltres_ex.png",
             TipoEnergia.FUEGO,
             (short)130,
             (short)130,
@@ -487,6 +504,7 @@ private PokemonEx crearArticunoEx() {
     PokemonEx articuno =
         new PokemonEx(
             "Articuno ex",
+            "/Cartas_POCKETCG/Articuno_ex.png",
             TipoEnergia.AGUA,
             (short)130,
             (short)130,

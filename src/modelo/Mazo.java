@@ -65,7 +65,7 @@ public class Mazo {
         Collections.shuffle(this.cartas);
     }
 
-    // Roba la mano inicial de 5 cartas. Si no sale ningun basico hace mulligan.
+    
     public List<Carta> robarManoInicial() {
         if (this.cartas.size() != TAMANO) {
             System.out.println("El mazo no esta completo");

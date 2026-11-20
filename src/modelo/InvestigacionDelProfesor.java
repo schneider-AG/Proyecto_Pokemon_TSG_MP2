@@ -4,7 +4,9 @@ public class InvestigacionDelProfesor extends Soporte {
     public InvestigacionDelProfesor() {
         super(
             "Investigacion del Profesor",
-            "Descarta tu mano actual y roba 2 cartas del mazo"
+            "/Cartas_POCKETCG/Investigacion_del_Profesor.png",
+            "Descarta tu mano actual y roba 2 cartas del mazo",
+            false
         );
     }
 
@@ -16,18 +18,14 @@ public Boolean puedeActivar(Jugador jugador) {
 }
 
 @Override
-public Void Activar(Jugador jugador) {
+public String Activar(Jugador jugador, Pokemon objetivo) {
 
     if (!puedeActivar(jugador)) {
-        return null;
+        return "No puedes activar " + getNombre() + " en este momento.";
     }
-    jugador.getMano().clear();
     jugador.robarCarta();
     jugador.robarCarta();
     jugador.registrarSoporte();
-    System.out.println(
-        "Investigacion del Profesor activada"
-    );
 
     return null;
 }

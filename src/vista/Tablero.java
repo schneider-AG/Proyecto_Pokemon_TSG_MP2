@@ -686,18 +686,19 @@ public class Tablero extends javax.swing.JFrame {
         // 3. Ejecutar el cambio en el motor
         motorGrafico.pasarTurno();
 
-        JOptionPane.showMessageDialog(
-        this,
-        "Turno de " + motorGrafico.jugadorActual().getNombre() + " — presiona Continuar",
-        "Cambio de turno",
-        JOptionPane.INFORMATION_MESSAGE
-        );
 
-        // 4. Refrescar toda la interfaz (esto hace que el tablero "gire")
+
         actualizar();
         actualizarMano();
         actualizarManoRival();
         limpiarBordesMano();
+
+        PantallaCambio pantalla = new PantallaCambio(
+            null,
+            motorGrafico.jugadorActual().getNombre(),
+            "/Cartas_POCKETCG/PantallaCambioTurno.jpeg" // Ajusta a la ruta real de tu imagen
+        );
+        pantalla.setVisible(true);
 
         registrarEvento("Turno " + motorGrafico.getTurno() + " - Juega: " + motorGrafico.jugadorActual().getNombre());
 

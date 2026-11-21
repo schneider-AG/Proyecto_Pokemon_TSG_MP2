@@ -149,7 +149,6 @@ public class Jugador {
 
     public boolean atacar(Ataque ataque, Jugador oponente) {
         if (!this.puedeAtacarEsteTurno || this.yaAtacoEsteTurno) {
-            System.out.println("No se pudo atacar");
             return false;
         }
         Pokemon activo = this.campo.getPokemonActivo();
@@ -172,7 +171,6 @@ public class Jugador {
 public void reiniciarEstadoTurno() {
     this.yaRetiroEsteTurno = false;
     this.yaAtacoEsteTurno = false;
-    // Incluye aquí también el reinicio de energía adjunta si lo manejas en Jugador
 }
 
 public boolean promoverDeBanca(Pokemon elegido) {
@@ -183,7 +181,7 @@ public boolean promoverDeBanca(Pokemon elegido) {
         return false;
     }
     this.campo.getBanco().remove(elegido);
-    this.campo.colocarActivo(elegido); // Usa el setter de activo que tengas en Campo
+    this.campo.colocarActivo(elegido);
     return true;
 }
 
@@ -208,7 +206,6 @@ public boolean promoverDeBanca(Pokemon elegido) {
         return true;
     }
 
-    // Hay pokemon en juego si tiene activo o algo en el banco
     public boolean tienePokemonEnJuego() {
         return this.campo.getPokemonActivo() != null || !this.campo.getBanco().isEmpty();
     }
@@ -254,13 +251,11 @@ public boolean promoverDeBanca(Pokemon elegido) {
             return "No puedes activar " + entrenador.getNombre() + " en este momento.";
         }
 
-        // Ejecuta la carta pasando el objetivo (será null si no requiere objetivo)
         String error = entrenador.Activar(this, objetivo);
         if (error != null) {
-            return error; // Si falló la validación (ej. no es de Agua), no se gasta la carta
+            return error;
         }
 
-        // Si tuvo éxito, pasa de la mano al descarte
         this.mano.remove(entrenador);
         return null;
     }
@@ -274,7 +269,7 @@ public boolean promoverDeBanca(Pokemon elegido) {
     }
     objetivo.adjuntarEnergia(getEnergiaDisponible());
     zonaEnergia.tomarEnergia();
-    return null; // null indica que todo salió bien
+    return null;
     }
 
     public void generarEnergiaTurno(int turno) {
@@ -374,7 +369,7 @@ public boolean promoverDeBanca(Pokemon elegido) {
     if (campo.getPokemonActivo() != null && campo.getBanco().size() >= 2){
         return "Tu banco está lleno";
     }
-    return null;   // null = se puede
+    return null;
     }
 
 }

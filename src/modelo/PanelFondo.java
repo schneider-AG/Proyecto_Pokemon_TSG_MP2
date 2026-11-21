@@ -12,8 +12,6 @@ public class PanelFondo extends JPanel {
         java.net.URL url = getClass().getResource(ruta);
         if (url != null) {
             fondo = new ImageIcon(url).getImage();
-        } else {
-            System.out.println("No se encontró la imagen: " + ruta);
         }
     }
 

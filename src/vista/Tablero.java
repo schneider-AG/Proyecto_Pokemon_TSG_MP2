@@ -39,7 +39,6 @@ import modelo.Carta;
 import modelo.Entrenador;
 import modelo.Jugador;
 import modelo.MotorGrafico;
-import modelo.MotorJuego;
 import modelo.PanelFondo;
 import modelo.Pokemon;
 import modelo.PokemonBasico;
@@ -52,7 +51,7 @@ public class Tablero extends javax.swing.JFrame {
     private static final int CARD_HEIGHT = 135;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Tablero.class.getName());
-    private MotorJuego motor;
+    private MotorGrafico motor;
     private ZonaEnergia zonaEnergiaJugadorActual;
     private MotorGrafico motorGrafico;
     private JPopupMenu popup;
@@ -69,10 +68,6 @@ public class Tablero extends javax.swing.JFrame {
     private boolean esperandoReemplazoBanca = false;
     private boolean esperandoRetiradaBanca = false;
     private Entrenador entrenadorPendiente = null;
-    
-    public void setMotor(MotorJuego motor) {
-        this.motor = motor;
-    }
 
     /**
      * Creates new form Tablero
@@ -446,9 +441,9 @@ public class Tablero extends javax.swing.JFrame {
         panelFondo.setPreferredSize(new java.awt.Dimension(550, 512));
         panelFondo.setLayout(null);
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/CartaImagen.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Cartas_POCKETCG/CartaImagen.png"))); // NOI18N
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/CartaImagen.png"))); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Cartas_POCKETCG/CartaImagen.png"))); // NOI18N
 
         panelBanco1.setBackground(new java.awt.Color(204, 255, 255));
 
@@ -479,7 +474,6 @@ public class Tablero extends javax.swing.JFrame {
         jPanel16.setBackground(new java.awt.Color(204, 255, 204));
         jPanel16.setLayout(null);
 
-        lblEnergiaAgua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaAgua.png"))); // NOI18N
 
 
         jLabel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -490,8 +484,6 @@ public class Tablero extends javax.swing.JFrame {
 
         jPanel15.setBackground(new java.awt.Color(204, 255, 204));
         jPanel15.setLayout(null);
-
-        lblEnergiaFuego.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaFuego.png"))); // NOI18N
 
 
         jTextArea1.setColumns(20);
@@ -534,7 +526,6 @@ public class Tablero extends javax.swing.JFrame {
         jPanel18.setBackground(new java.awt.Color(204, 255, 204));
         jPanel18.setLayout(null);
 
-        lblEnergiaElectrica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaElectrica.png"))); // NOI18N
 
 
         jLabel17.setText("Rival: " + motorGrafico.getJugador1().getNombre());
@@ -555,9 +546,6 @@ public class Tablero extends javax.swing.JFrame {
 
         jPanel13.setBackground(new java.awt.Color(204, 255, 204));
         jPanel13.setLayout(null);
-
-        lblEnergiaPsiquica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaPsiquica.png"))); // NOI18N
-        lblEnergiaPsiquica.setToolTipText("");
 
         btnRendirse.setText("Rendirse");
         btnRendirse.setForeground(new Color(180, 30, 30));
@@ -721,18 +709,19 @@ public class Tablero extends javax.swing.JFrame {
             return;
         }
 
-        JOptionPane.showMessageDialog(
-        this,
-        "Turno de " + motorGrafico.jugadorActual().getNombre() + " — presiona Continuar",
-        "Cambio de turno",
-        JOptionPane.INFORMATION_MESSAGE
-        );
 
-        // 4. Refrescar toda la interfaz (esto hace que el tablero "gire")
+
         actualizar();
         actualizarMano();
         actualizarManoRival();
         limpiarBordesMano();
+
+        PantallaCambio pantalla = new PantallaCambio(
+            null,
+            motorGrafico.jugadorActual().getNombre(),
+            "/Cartas_POCKETCG/PantallaCambioTurno.jpeg" // Ajusta a la ruta real de tu imagen
+        );
+        pantalla.setVisible(true);
 
         registrarEvento("Turno " + motorGrafico.getTurno() + " - Juega: " + motorGrafico.jugadorActual().getNombre());
 

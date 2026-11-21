@@ -6,16 +6,14 @@ public class IconosEnergia {
     public String getRutaEnergia(TipoEnergia energia){
         switch(energia){
             case FUEGO:
-                return "Media/EnergiaFuego.png";
+                return "Cartas_POCKETCG/EnergiaFuego.png";
             case AGUA:
-                return "Media/EnergiaAgua.png";
+                return "Cartas_POCKETCG/EnergiaAgua.png";
             case ELECTRICO:
-                return "Media/EnergiaElectrica.png";
+                return "Cartas_POCKETCG/EnergiaElectrica.png";
             case PSIQUICO:
-                return "Media/EnergiaPsiquica.png";
-
+                return "Cartas_POCKETCG/EnergiaPsiquica.png";
             default:
-                System.out.println("Retorno nulo");
                 return null;
         }
         }

@@ -28,7 +28,6 @@ public class Mazo {
         this.cartas = new ArrayList<>(cartas);
 
         if (!tiposEnergiaValido(tiposDeEnergias)) {
-        System.out.println("Mazo invalido, se generaran energias por defecto");
         this.tiposEnergia = tiposPorDefecto(cartas);
         } else{
             this.tiposEnergia = new ArrayList<>(tiposDeEnergias);
@@ -68,7 +67,6 @@ public class Mazo {
     
     public List<Carta> robarManoInicial() {
         if (this.cartas.size() != TAMANO) {
-            System.out.println("El mazo no esta completo");
             return new ArrayList<>();
         }
         List<Carta> mano = new ArrayList<>();

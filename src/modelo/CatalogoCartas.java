@@ -223,15 +223,6 @@ private PokemonBasico crearCharmander() {
         )
     );
 
-    charmander.agregarAtaque(
-        new Ataque(
-            "Lanzallamas",
-            2,
-            TipoEnergia.FUEGO,
-            40
-        )
-    );
-
     return charmander;
 }
 
@@ -249,21 +240,13 @@ private PokemonBasico crearSquirtle() {
 
     squirtle.agregarAtaque(
         new Ataque(
-            "Pistola Agua",
+            "Placaje",
             1,
             TipoEnergia.AGUA,
             20
         )
     );
 
-    squirtle.agregarAtaque(
-        new Ataque(
-            "Burbuja",
-            2,
-            TipoEnergia.AGUA,
-            40
-        )
-    );
 
     return squirtle;
 }
@@ -282,19 +265,10 @@ private PokemonBasico crearPikachu() {
 
     pikachu.agregarAtaque(
         new Ataque(
-            "Impactrueno",
+            "Mordisco",
             1,
             TipoEnergia.ELECTRICO,
             20
-        )
-    );
-
-    pikachu.agregarAtaque(
-        new Ataque(
-            "Rayo",
-            2,
-            TipoEnergia.ELECTRICO,
-            40
         )
     );
 
@@ -381,19 +355,10 @@ private PokemonBasico crearMagikarp() {
 
     magikarp.agregarAtaque(
         new Ataque(
-            "Salpicadura",
+            "Chapoteo",
             1,
             TipoEnergia.AGUA,
             10
-        )
-    );
-
-    magikarp.agregarAtaque(
-        new Ataque(
-            "Empujon",
-            2,
-            TipoEnergia.AGUA,
-            20
         )
     );
 
@@ -414,19 +379,10 @@ private PokemonBasico crearJigglypuff() {
 
     jigglypuff.agregarAtaque(
         new Ataque(
-            "Canto",
+            "Golpe",
             1,
             TipoEnergia.INCOLORO,
             20
-        )
-    );
-
-    jigglypuff.agregarAtaque(
-        new Ataque(
-            "Golpe",
-            2,
-            TipoEnergia.INCOLORO,
-            40
         )
     );
 
@@ -447,21 +403,13 @@ private PokemonBasico crearSnorlax() {
 
     snorlax.agregarAtaque(
         new Ataque(
-            "Placaje",
+            "Golpe cuerpo",
             2,
             TipoEnergia.INCOLORO,
-            30
+            100
         )
     );
 
-    snorlax.agregarAtaque(
-        new Ataque(
-            "Hiperrayo",
-            3,
-            TipoEnergia.INCOLORO,
-            60
-        )
-    );
 
     return snorlax;
 }

@@ -63,6 +63,7 @@ public class Jugador {
     public void iniciarTurno(boolean puedeAtacar, int turnoGlobal) {
         this.puedeAtacarEsteTurno = puedeAtacar;
         this.yaAtacoEsteTurno = false;
+        this.yaRetiroEsteTurno = false;
         this.soporteUsadoEsteTurno = false;
         this.turboVelocidadUsadoEsteTurno = false;
         this.turnoGlobal = turnoGlobal;
@@ -132,8 +133,7 @@ public class Jugador {
         if (!this.campo.getBanco().contains(nuevoActivo)) {
             return false;
         }
-        int costo = Math.max(0, activo.getCostoRetirada()
-            - (this.turboVelocidadUsadoEsteTurno ? 1 : 0));
+        int costo = getCostoRetiradaActual();
         List<TipoEnergia> energias = activo.getEnergias();
         if (energias.size() < costo) {
             return false;
@@ -145,6 +145,15 @@ public class Jugador {
         this.campo.colocarActivo(nuevoActivo);
         this.campo.agregarABanco(activo);
         return true;
+    }
+
+    public int getCostoRetiradaActual() {
+        Pokemon activo = this.campo.getPokemonActivo();
+        if (activo == null) {
+            return 0;
+        }
+        return Math.max(0, activo.getCostoRetirada()
+            - (this.turboVelocidadUsadoEsteTurno ? 1 : 0));
     }
 
     public boolean atacar(Ataque ataque, Jugador oponente) {

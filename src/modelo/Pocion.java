@@ -13,7 +13,8 @@ public class Pocion extends Objeto {
     @Override
     public Boolean puedeActivar(Jugador jugador) {
         return jugador != null
-            && (jugador.getCampo().getPokemonActivo() != null) || !(jugador.getCampo().getBanco().isEmpty());
+            && (jugador.getCampo().getPokemonActivo() != null
+                || !jugador.getCampo().getBanco().isEmpty());
     }
 
     @Override

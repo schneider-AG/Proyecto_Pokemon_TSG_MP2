@@ -370,11 +370,27 @@ public class Tablero extends javax.swing.JFrame {
     if (opcion == JOptionPane.YES_OPTION) {
         Jugador ganador = motorGrafico.rendirse();
         registrarEvento(actual.getNombre() + " se rindió. ¡Gana " + ganador.getNombre() + "!");
-        JOptionPane.showMessageDialog(this, "¡" + ganador.getNombre() + " gana la partida!");
-        jButton1.setEnabled(false);
-        btnRendirse.setEnabled(false);
+        mostrarFinPartida();
     }
 }
+
+    private void mostrarFinPartida() {
+        int opcion = JOptionPane.showOptionDialog(
+            this,
+            motorGrafico.anunciarGanador(),
+            "Fin de la partida",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.INFORMATION_MESSAGE,
+            null,
+            new Object[] {"Jugar otra partida", "Salir"},
+            "Jugar otra partida"
+        );
+
+        if (opcion == 0) {
+            new PantallaInicio().setVisible(true);
+        }
+        dispose();
+    }
 
     private void initComponents() {
 
@@ -593,6 +609,11 @@ public class Tablero extends javax.swing.JFrame {
     popup.setVisible(false);
 
     String error = motorGrafico.atacar(indice);
+    if ("FIN_PARTIDA".equals(error)) {
+        actualizar();
+        mostrarFinPartida();
+        return;
+    }
     if (error != null) {
         JOptionPane.showMessageDialog(this, error);
         return;
@@ -600,12 +621,6 @@ public class Tablero extends javax.swing.JFrame {
 
     registrarEvento(motorGrafico.jugadorActual().getNombre() + " atacó.");
     actualizar();
-    if (motorGrafico.verificarGanador()) {
-        // Verificar si ya terminó la partida
-        JOptionPane.showMessageDialog(this, motorGrafico.anunciarGanador());
-        Tablero.this.dispose();
-        return;
-    }
 
     if (motorGrafico.jugadorRival().getCampo().getPokemonActivo() == null) {
         esperandoReemplazoBanca = true;
@@ -696,7 +711,15 @@ public class Tablero extends javax.swing.JFrame {
         // energiaSeleccionada = false; // Descomenta si ya tienes esta variable
 
         // 3. Ejecutar el cambio en el motor
-        motorGrafico.pasarTurno();
+        String resultadoTurno = motorGrafico.pasarTurno();
+        if ("FIN_PARTIDA".equals(resultadoTurno)) {
+            mostrarFinPartida();
+            return;
+        }
+        if (resultadoTurno != null) {
+            JOptionPane.showMessageDialog(this, resultadoTurno);
+            return;
+        }
 
         JOptionPane.showMessageDialog(
         this,

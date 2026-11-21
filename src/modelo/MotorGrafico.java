@@ -16,6 +16,7 @@ public class MotorGrafico {
 
     private boolean partidaTerminada = false;
     private Jugador ganador = null;
+    private CondicionVictoria condicionVictoria = null;
 
 
     public MotorGrafico(
@@ -79,17 +80,23 @@ public boolean iniciarPartida() {
         }
 
         if (verificarGanador()) {
-            anunciarGanador();
             return "FIN_PARTIDA";
         }
 
         prepararTurno();
+        if (verificarGanador()) {
+            return "FIN_PARTIDA";
+        }
         return null;
     }
 
     public void prepararTurno() {
         Jugador actual = jugadorActual();
         actual.iniciarTurno();
+        if (!actual.puedeRobar()) {
+            registrarVictoria(jugadorRival(), CondicionVictoria.MAZO_VACIO);
+            return;
+        }
         actual.robarCarta();
         actual.generarEnergiaTurno(this.turno);
     }
@@ -194,10 +201,8 @@ public String retirar(Pokemon elegidoBanca) {
         }
 
         if (verificarGanador()) {
-            anunciarGanador();
             return "FIN_PARTIDA";
         }
-        prepararTurno();
         return null;
     }
 
@@ -247,13 +252,19 @@ private void evolucionarPokemon(Jugador jugador) {
 }
 
 public Jugador obtenerGanador() {
-    if (jugador1.gano() || !jugador2.tienePokemonEnJuego()) {
-        return jugador1;
+    if (ganador != null) {
+        return ganador;
     }
-    if (jugador2.gano() || !jugador1.tienePokemonEnJuego()) {
-        return jugador2;
+    if (jugador1.gano()) {
+        registrarVictoria(jugador1, CondicionVictoria.PUNTOS_DE_PREMIO);
+    } else if (jugador2.gano()) {
+        registrarVictoria(jugador2, CondicionVictoria.PUNTOS_DE_PREMIO);
+    } else if (!jugador1.tienePokemonEnJuego()) {
+        registrarVictoria(jugador2, CondicionVictoria.SIN_POKEMON);
+    } else if (!jugador2.tienePokemonEnJuego()) {
+        registrarVictoria(jugador1, CondicionVictoria.SIN_POKEMON);
     }
-    return null; // La partida sigue
+    return ganador;
 }
 
 public boolean verificarGanador() {
@@ -261,18 +272,22 @@ public boolean verificarGanador() {
 }
 
     public String anunciarGanador() {
-
-        if (!jugador1.tienePokemonEnJuego() && !jugador2.tienePokemonEnJuego()) {
-            return "La partida no tiene ganador: ninguno de los jugadores tiene Pokemon en juego.";
+        Jugador ganadorActual = obtenerGanador();
+        if (ganadorActual == null || condicionVictoria == null) {
+            return "La partida continúa.";
         }
+        return "¡" + ganadorActual.getNombre() + " es el campeón del duelo!\n"
+            + "Condición de victoria: " + condicionVictoria.getDescripcion() + ".";
+    }
 
-        if (jugador1.gano() ||
-            !jugador2.tienePokemonEnJuego()) {
+    private void registrarVictoria(Jugador ganador, CondicionVictoria condicion) {
+        this.ganador = ganador;
+        this.condicionVictoria = condicion;
+        this.partidaTerminada = true;
+    }
 
-            return jugador1.getNombre() + " ha ganado la partida.";
-        }
-
-        return jugador2.getNombre() + " ha ganado la partida";
+    public CondicionVictoria getCondicionVictoria() {
+        return condicionVictoria;
     }
 
 public String seleccionarCartaMano(Carta carta) {
@@ -324,8 +339,7 @@ public Jugador rendirse() {
     if (partidaTerminada) {
         return ganador;
     }
-    this.ganador = jugadorRival();
-    this.partidaTerminada = true;
+    registrarVictoria(jugadorRival(), CondicionVictoria.RENDICION);
     return this.ganador;
 }
 

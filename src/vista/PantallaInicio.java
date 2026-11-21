@@ -86,7 +86,7 @@ public class PantallaInicio extends javax.swing.JFrame {
     // End of variables declaration                
 
     private void continuar() {
-    new JugadorInformacion((byte) 1, null).setVisible(true);   // el nombre de tu otro JFrame
-    dispose();                                // cierra esta ventana
+        new ConfiguracionPartida().setVisible(true);
+        dispose();
 }
 }

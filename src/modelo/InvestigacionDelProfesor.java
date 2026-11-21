@@ -23,6 +23,7 @@ public String Activar(Jugador jugador, Pokemon objetivo) {
     if (!puedeActivar(jugador)) {
         return "No puedes activar " + getNombre() + " en este momento.";
     }
+    jugador.getMano().clear();
     jugador.robarCarta();
     jugador.robarCarta();
     jugador.registrarSoporte();

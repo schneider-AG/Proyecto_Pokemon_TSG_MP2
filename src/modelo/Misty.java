@@ -36,8 +36,11 @@ public String Activar(Jugador jugador, Pokemon objetivo) {
             return "Debes hacer clic sobre uno de tus propios Pokémon (Activo o Banca).";
         }
 
-    if (objetivo != null &&
-        objetivo.getTipo() == TipoEnergia.AGUA) {
+    if (objetivo == null) {
+        return "Selecciona un Pokémon de Agua para usar Misty.";
+    }
+
+    if (objetivo.getTipo() == TipoEnergia.AGUA) {
 
         objetivo.adjuntarEnergia(TipoEnergia.AGUA);
         objetivo.adjuntarEnergia(TipoEnergia.AGUA);
@@ -45,7 +48,7 @@ public String Activar(Jugador jugador, Pokemon objetivo) {
         jugador.registrarSoporte();
 
         return null;
-        } else{
+        } else {
             return objetivo.getNombre() + " no es de tipo agua";
         }  
     }

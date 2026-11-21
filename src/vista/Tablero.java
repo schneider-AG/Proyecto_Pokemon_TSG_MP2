@@ -85,7 +85,9 @@ public class Tablero extends javax.swing.JFrame {
     actualizar();                  // Dibuja la mano, energía y tablero por primera vez
     actualizarMano();
     
-    registrarEvento("¡Comienza la partida! Turno de: " + motorGrafico.jugadorActual().getNombre());
+    registrarEvento("Preparación inicial: " + motorGrafico.jugadorActual().getNombre()
+        + ", elige tu Pokémon activo y coloca hasta dos Pokémon en la banca si quieres."
+        + " Después pulsa Pasar turno para que el otro jugador prepare su campo.");
 }
 
     private void armarInterfaz() {
@@ -538,6 +540,8 @@ public class Tablero extends javax.swing.JFrame {
 
         jLabel19.setText("Estado de energía");
         jLabel19.setOpaque(true);
+        jLabel19.setToolTipText("Haz clic aquí para seleccionar la energía y luego en uno de tus Pokémon.");
+        jLabel19.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
 
         jLabel20.setText("Turno " + motorGrafico.getTurno() + " - " + motorGrafico.jugadorActual().getNombre());
@@ -723,7 +727,13 @@ public class Tablero extends javax.swing.JFrame {
         );
         pantalla.setVisible(true);
 
-        registrarEvento("Turno " + motorGrafico.getTurno() + " - Juega: " + motorGrafico.jugadorActual().getNombre());
+        if (motorGrafico.estaEnPreparacionInicial()) {
+            registrarEvento("Preparación inicial: " + motorGrafico.jugadorActual().getNombre()
+                + ", elige tu Pokémon activo y coloca hasta dos Pokémon en la banca si quieres.");
+        } else {
+            registrarEvento("Turno " + motorGrafico.getTurno() + " - Juega: "
+                + motorGrafico.jugadorActual().getNombre());
+        }
 
         if (esperandoReemplazoBanca) {
         panelBanco1.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 3));
@@ -1054,12 +1064,14 @@ private void conectarEventos() {
 
         if (disponible == null) {
             jLabel19.setIcon(null);
-            jLabel19.setText("No hay energía");
+            jLabel19.setText("Sin energía este turno");
             jLabel19.setBorder(null);
+            jLabel19.setToolTipText("La energía se genera al comenzar tu turno.");
         } else {
-            jLabel19.setText("");
-            ImageIcon icon = new ImageIcon(iconosEnergia.getRutaEnergia(disponible));
-            jLabel19.setIcon(icon);
+            java.net.URL recursoEnergia = getClass().getResource(iconosEnergia.getRutaEnergia(disponible));
+            jLabel19.setText("Clic para usar");
+            jLabel19.setIcon(recursoEnergia == null ? null : new ImageIcon(recursoEnergia));
+            jLabel19.setToolTipText("Haz clic para seleccionar esta energía y luego en uno de tus Pokémon.");
             jLabel19.setBorder(energiaSeleccionada
                     ? BorderFactory.createLineBorder(new Color(255, 204, 0), 2, true)
                     : null);

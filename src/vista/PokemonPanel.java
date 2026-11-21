@@ -161,9 +161,14 @@ public void setImagen(ImageIcon icono) {
             if (indice != -1) {
                 labelsEnergia.get(indice).setText(String.valueOf(cantidad));
             } else if (tiposEnPanel.size() < 3) {
-                Image img = new ImageIcon(new IconosEnergia().getRutaEnergia(tipo))
-                        .getImage()
-                        .getScaledInstance(lado, lado, Image.SCALE_SMOOTH);
+                java.net.URL recursoEnergia = getClass().getResource(
+                    new IconosEnergia().getRutaEnergia(tipo)
+                );
+                if (recursoEnergia == null) {
+                    continue;
+                }
+                Image img = new ImageIcon(recursoEnergia).getImage()
+                    .getScaledInstance(lado, lado, Image.SCALE_SMOOTH);
 
                 JLabel lblNuevo = new JLabel(String.valueOf(cantidad), new ImageIcon(img), JLabel.CENTER);
                 lblNuevo.setFont(new Font("SansSerif", Font.BOLD, 10));

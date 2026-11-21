@@ -49,7 +49,7 @@ public class PantallaInicio extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        panelInicio = new PanelFondo("/Media/Fondo inicio.png");
+        panelInicio = new PanelFondo("/Cartas_POCKETCG/Fondo inicio.png");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 

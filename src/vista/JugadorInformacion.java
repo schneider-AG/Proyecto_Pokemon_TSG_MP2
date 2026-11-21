@@ -146,10 +146,11 @@ public class JugadorInformacion extends javax.swing.JFrame {
                 Jugador jugador = new Jugador(nombre, mazo, zonaEnergia);
                 if(jugador1 == null) {
                     new JugadorInformacion((byte) 2, jugador).setVisible(true);
-
+                    this.dispose();
                 } else {
                     motorGrafico = new MotorGrafico(jugador1, jugador);
                     continuar();
+                    this.dispose();
                 }
             }
     }

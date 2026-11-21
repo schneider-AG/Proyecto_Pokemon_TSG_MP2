@@ -425,9 +425,9 @@ public class Tablero extends javax.swing.JFrame {
         panelFondo.setPreferredSize(new java.awt.Dimension(550, 512));
         panelFondo.setLayout(null);
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/CartaImagen.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Cartas_POCKETCG/CartaImagen.png"))); // NOI18N
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/CartaImagen.png"))); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Cartas_POCKETCG/CartaImagen.png"))); // NOI18N
 
         panelBanco1.setBackground(new java.awt.Color(204, 255, 255));
 
@@ -458,7 +458,6 @@ public class Tablero extends javax.swing.JFrame {
         jPanel16.setBackground(new java.awt.Color(204, 255, 204));
         jPanel16.setLayout(null);
 
-        lblEnergiaAgua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaAgua.png"))); // NOI18N
 
 
         jLabel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -469,8 +468,6 @@ public class Tablero extends javax.swing.JFrame {
 
         jPanel15.setBackground(new java.awt.Color(204, 255, 204));
         jPanel15.setLayout(null);
-
-        lblEnergiaFuego.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaFuego.png"))); // NOI18N
 
 
         jTextArea1.setColumns(20);
@@ -513,7 +510,6 @@ public class Tablero extends javax.swing.JFrame {
         jPanel18.setBackground(new java.awt.Color(204, 255, 204));
         jPanel18.setLayout(null);
 
-        lblEnergiaElectrica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaElectrica.png"))); // NOI18N
 
 
         jLabel17.setText("Rival: " + motorGrafico.getJugador1().getNombre());
@@ -534,9 +530,6 @@ public class Tablero extends javax.swing.JFrame {
 
         jPanel13.setBackground(new java.awt.Color(204, 255, 204));
         jPanel13.setLayout(null);
-
-        lblEnergiaPsiquica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Media/EnergiaPsiquica.png"))); // NOI18N
-        lblEnergiaPsiquica.setToolTipText("");
 
         btnRendirse.setText("Rendirse");
         btnRendirse.setForeground(new Color(180, 30, 30));

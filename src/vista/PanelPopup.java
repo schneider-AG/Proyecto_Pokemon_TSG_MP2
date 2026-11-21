@@ -63,7 +63,7 @@ public class PanelPopup extends javax.swing.JFrame {
 
         jPanel2.setPreferredSize(new java.awt.Dimension(300, 140));
 
-        bttnAtaque1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        bttnAtaque1.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         bttnAtaque1.setText("Ataque 1");
         bttnAtaque1.setPreferredSize(new java.awt.Dimension(200, 35));
         bttnAtaque1.addActionListener(this::jButton2ActionPerformed);
@@ -73,10 +73,12 @@ public class PanelPopup extends javax.swing.JFrame {
         bttnRetirar.setPreferredSize(new java.awt.Dimension(200, 35));
         bttnRetirar.addActionListener(this::jButton1ActionPerformed);
 
-        bttnAtaque2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        bttnAtaque2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         bttnAtaque2.setText("Ataque 2");
         bttnAtaque2.setPreferredSize(new java.awt.Dimension(200, 35));
         bttnAtaque2.addActionListener(this::jButton3ActionPerformed);
+
+        jPanel2.setOpaque(false);
 
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -84,23 +86,22 @@ public class PanelPopup extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bttnAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(bttnAtaque1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bttnRetirar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(bttnAtaque1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bttnAtaque2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bttnRetirar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(bttnAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(bttnAtaque1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(bttnRetirar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bttnAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bttnRetirar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(14, 14, 14))
         );
 
@@ -162,19 +163,19 @@ public class PanelPopup extends javax.swing.JFrame {
         cargarImagenCarta(p);
         // 1. Mostrar ataque 1 (siempre existe)
         Ataque atk1 = p.getAtaques().get(0);
-        bttnAtaque1.setText(atk1.getNombre() + " (" + atk1.getDanioBase() + ")");
+        bttnAtaque1.setText(atk1.getNombre() + " (" + atk1.getDanioBase() + ") / Energias requeridas " + atk1.getCostoEnergia());
 
         // 2. Mostrar ataque 2 solo si el Pokémon tiene un segundo ataque
         if (p.getAtaques().size() > 1) {
             Ataque atk2 = p.getAtaques().get(1);
-            bttnAtaque2.setText(atk2.getNombre() + " (" + atk2.getDanioBase() + ")");
+            bttnAtaque2.setText(atk2.getNombre() + " (" + atk2.getDanioBase() + ") / Energias requeridas " + atk2.getCostoEnergia());
             bttnAtaque2.setVisible(true);
         } else {
             bttnAtaque2.setVisible(false);
         }
 
         // 3. Mostrar coste de retirada
-        bttnRetirar.setText("Retirar(Costo " + p.getCostoRetirada() + ")");
+        bttnRetirar.setText("Retirar (Costo " + p.getCostoRetirada() + ")");
         bttnRetirar.setFont(new java.awt.Font("Segoe UI", 0, 14));
     }
 

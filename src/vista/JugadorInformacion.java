@@ -10,7 +10,6 @@ import modelo.CatalogoCartas;
 import modelo.Mazo;
 import modelo.MotorGrafico;
 import modelo.ZonaEnergia;
-import modelo.MotorJuego;
 
 
 public class JugadorInformacion extends javax.swing.JFrame {

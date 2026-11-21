@@ -8,8 +8,6 @@ public class MotorGrafico {
     private Jugador jugador1;
     private Jugador jugador2;
 
-    private Consola consola;
-
     private int turno;
     private int turnoGlobal = 1;
 
@@ -200,51 +198,6 @@ public String retirar(Pokemon elegidoBanca) {
         prepararTurno();
         return null;
     }
-
-private void evolucionarPokemon(Jugador jugador) {
-    List<Carta> evoluciones = new ArrayList<>();
-    for (Carta carta : jugador.getMano()) {
-        if (carta instanceof PokemonEvolucion) evoluciones.add(carta);
-    }
-    if (evoluciones.isEmpty()) {
-        System.out.println("No tienes cartas de evolucion en la mano.");
-        return;
-    }
-    for (int i = 0; i < evoluciones.size(); i++) {
-        System.out.println((i + 1) + ". " + evoluciones.get(i).getNombre());
-    }
-    int opcion = consola.elegirEntrenador();
-    if (opcion < 1 || opcion > evoluciones.size()) {
-        System.out.println("Seleccion invalida.");
-        return;
-    }
-    Carta carta = evoluciones.get(opcion - 1);
-    List<Pokemon> propios = new ArrayList<>();
-    Pokemon activo = jugador.getCampo().getPokemonActivo();
-    if (activo != null) propios.add(activo);
-    propios.addAll(jugador.getCampo().getBanco());
-    if (propios.isEmpty()) {
-        System.out.println("No tienes Pokemon en juego.");
-        return;
-    }
-    for (int i = 0; i < propios.size(); i++) {
-        Pokemon pokemon = propios.get(i);
-        System.out.println((i + 1) + ". " + pokemon.getNombre()
-            + " (" + pokemon.getPsActual() + "/" + pokemon.getPsMaximo() + " PS)");
-    }
-    int opcionPokemon = consola.elegirPokemon();
-    if (opcionPokemon < 1 || opcionPokemon > propios.size()) {
-        System.out.println("Seleccion invalida.");
-        return;
-    }
-    Pokemon objetivo = propios.get(opcionPokemon - 1);
-    String motivo = jugador.motivoNoEvolucion(objetivo, carta);
-    if (motivo != null) {
-        System.out.println(motivo);
-    } else if (jugador.evolucionar(carta, objetivo)) {
-        System.out.println(objetivo.getNombre() + " evoluciono a " + carta.getNombre() + ".");
-    }
-}
 
 public Jugador obtenerGanador() {
     if (jugador1.gano() || !jugador2.tienePokemonEnJuego()) {

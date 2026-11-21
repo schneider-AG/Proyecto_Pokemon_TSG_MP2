@@ -1,16 +1,21 @@
 package vista;
 
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Panel;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import modelo.Ataque;
+import modelo.Carta;
 import modelo.Pokemon;
 
 public class PanelPopup extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PanelPopup.class.getName());
+    private Image imagenFondo;
 
     /**
      * Creates new form Menu
@@ -18,6 +23,15 @@ public class PanelPopup extends javax.swing.JFrame {
     public PanelPopup() {
         initComponents();
     }
+
+        public void setImagen(ImageIcon icono) {
+            if (icono != null) {
+                this.imagenFondo = icono.getImage();
+            } else {
+                this.imagenFondo = null;
+            }
+            repaint();
+        }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,62 +42,69 @@ public class PanelPopup extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        panelEnergias = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 2));
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel(){
+                    @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    if (imagenFondo != null) {
+                        g.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
+                    }
+                }
+            };
+        jPanel2 = new javax.swing.JPanel();
         bttnAtaque1 = new javax.swing.JButton();
-        bttnAtaque2 = new javax.swing.JButton();
         bttnRetirar = new javax.swing.JButton();
+        bttnAtaque2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setPreferredSize(new java.awt.Dimension(300, 420));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jLabel1.setText("Pokemon");
+        jPanel2.setPreferredSize(new java.awt.Dimension(300, 140));
 
         bttnAtaque1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         bttnAtaque1.setText("Ataque 1");
+        bttnAtaque1.setPreferredSize(new java.awt.Dimension(200, 35));
         bttnAtaque1.addActionListener(this::jButton2ActionPerformed);
-
-        bttnAtaque2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        bttnAtaque2.setText("Ataque 2");
-        bttnAtaque2.addActionListener(this::jButton3ActionPerformed);
 
         bttnRetirar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         bttnRetirar.setText("Retirada");
+        bttnRetirar.setPreferredSize(new java.awt.Dimension(200, 35));
         bttnRetirar.addActionListener(this::jButton1ActionPerformed);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(66, 66, 66)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(77, 77, 77)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(bttnAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bttnAtaque1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bttnRetirar, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(73, Short.MAX_VALUE))
+        bttnAtaque2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        bttnAtaque2.setText("Ataque 2");
+        bttnAtaque2.setPreferredSize(new java.awt.Dimension(200, 35));
+        bttnAtaque2.addActionListener(this::jButton3ActionPerformed);
+
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bttnAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(bttnAtaque1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bttnRetirar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(88, 88, 88)
-                .addComponent(bttnAtaque1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(bttnAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(bttnRetirar, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(bttnAtaque2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bttnAtaque1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(bttnRetirar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14))
         );
+
+        jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_END);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -103,7 +124,22 @@ public class PanelPopup extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>               
+    }// </editor-fold>      
+
+       private void cargarImagenCarta(Carta c) {
+    if (c == null || c.getRutaImagen() == null) {
+        setImagen(null);
+        return;
+    }
+
+    // Busca el archivo dentro de src/Media/... igual que en Tablero
+    java.net.URL url = getClass().getResource(c.getRutaImagen());
+    if (url != null) {
+        setImagen(new ImageIcon(url));
+    } else {
+        setImagen(null);
+    }
+}
     
     public JPanel getPanel(){
         return jPanel1;
@@ -123,7 +159,7 @@ public class PanelPopup extends javax.swing.JFrame {
 
     // Ejemplo dentro de PanelPopup.java
     public void cargarPokemon(Pokemon p) {
-        jLabel1.setText(p.getNombre());
+        cargarImagenCarta(p);
         // 1. Mostrar ataque 1 (siempre existe)
         Ataque atk1 = p.getAtaques().get(0);
         bttnAtaque1.setText(atk1.getNombre() + " (" + atk1.getDanioBase() + ")");
@@ -158,8 +194,7 @@ public class PanelPopup extends javax.swing.JFrame {
     private javax.swing.JButton bttnRetirar;
     private javax.swing.JButton bttnAtaque1;
     private javax.swing.JButton bttnAtaque2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private JPanel panelEnergias;
+    private JPanel jPanel2;
     // End of variables declaration                   
 }

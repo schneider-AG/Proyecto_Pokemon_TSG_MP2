@@ -24,7 +24,6 @@ public abstract class Pokemon extends Carta{
     public void adjuntarEnergia(TipoEnergia energia){
         if(energia != null){
             this.energias.add(energia);
-            System.out.println("Se adjunto energia de tipo " + energia + " a " + getNombre());
         }
     }
 
@@ -34,7 +33,6 @@ public abstract class Pokemon extends Carta{
         }
 
         if(this.ataques.size() >= 2){
-            System.out.println("No se pueden agregar más de 2 ataques");
             return;
         }
         
@@ -66,12 +64,11 @@ public abstract class Pokemon extends Carta{
 
     public void atacar(Ataque ataque, Pokemon pokemonAtacado){
         if(ataque == null || pokemonAtacado == null){
-            System.out.println("Ataque u objeto no válido");
+
             return;
         }
 
         if(!puedeAtacar(ataque)){
-            System.out.println(getNombre() + " no tiene suficiente energia para usar " + ataque.getNombre());
             return;
         }
 
@@ -79,14 +76,11 @@ public abstract class Pokemon extends Carta{
 
         if(pokemonAtacado.getTipo().esDebilContra(getTipo())){
             danio += 20;
-            System.out.println("El tipo de elemento de " + pokemonAtacado.getNombre() +
-            " es debil contra el tipo de" + getNombre());
+
         }
 
         pokemonAtacado.recibirDaño(danio);
 
-        System.out.println(pokemonAtacado.getNombre() + " fue atacado por " + getNombre() + 
-        " usando el ataque " + ataque.getNombre());
     }
 
     public void recibirDaño(int cantidadDanio) {
@@ -100,8 +94,6 @@ public abstract class Pokemon extends Carta{
             this.psActual = 0;
         }
 
-        System.out.println(getNombre() + " recibio " + cantidadDanio + 
-        " puntos de daño. (ps restantes " + psActual + "/" + psMaximo + ")");
     }
 
     public void curar(int cantidadCuracion){
@@ -115,8 +107,6 @@ public abstract class Pokemon extends Carta{
             this.psActual = this.psMaximo;
         }
 
-        System.out.println(getNombre() + " ha recibido curacion (" + this.psActual +
-        "/" + this.psMaximo + ")");
     }
 
     public boolean estaDerrotado(){

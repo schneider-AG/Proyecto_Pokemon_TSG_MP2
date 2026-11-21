@@ -17,12 +17,10 @@ public class ZonaEnergia {
 
     public void generarEnergia() {
         if(tiposPosibles == null || tiposPosibles.isEmpty()){
-            System.out.println("No hay tipos de energía");
             return;
         }
         int indice = random.nextInt(tiposPosibles.size());
         this.energiaActual = this.tiposPosibles.get(indice);
-        System.out.println("Energía generada para el turno " + this.energiaActual);
     }
 
     public boolean hayEnergiaDisponible() {
@@ -32,7 +30,6 @@ public class ZonaEnergia {
     public TipoEnergia tomarEnergia() {
         
         if(!hayEnergiaDisponible()){
-            System.out.println("No hay energía disponible para este turno");
             return null;
         }
         TipoEnergia energiaTomada = this.energiaActual;

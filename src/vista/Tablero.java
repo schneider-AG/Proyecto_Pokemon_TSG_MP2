@@ -39,7 +39,6 @@ import modelo.Carta;
 import modelo.Entrenador;
 import modelo.Jugador;
 import modelo.MotorGrafico;
-import modelo.MotorJuego;
 import modelo.PanelFondo;
 import modelo.Pokemon;
 import modelo.PokemonBasico;
@@ -52,7 +51,7 @@ public class Tablero extends javax.swing.JFrame {
     private static final int CARD_HEIGHT = 135;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Tablero.class.getName());
-    private MotorJuego motor;
+    private MotorGrafico motor;
     private ZonaEnergia zonaEnergiaJugadorActual;
     private MotorGrafico motorGrafico;
     private JPopupMenu popup;
@@ -69,10 +68,6 @@ public class Tablero extends javax.swing.JFrame {
     private boolean esperandoReemplazoBanca = false;
     private boolean esperandoRetiradaBanca = false;
     private Entrenador entrenadorPendiente = null;
-    
-    public void setMotor(MotorJuego motor) {
-        this.motor = motor;
-    }
 
     /**
      * Creates new form Tablero

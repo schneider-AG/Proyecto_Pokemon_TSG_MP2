@@ -42,7 +42,8 @@ src/media/ y src\Cartas_POCKETCG contiene todas las imagenes de los pokemons.
 
 2. Escribe el nombre de cada jugador y selecciona su mazo (Fuego\Agua,Electrico\Psiquico o campeones).
 
-   <img width="1211" height="665" alt="image" src="https://github.com/user-attachments/assets/938c6cf7-eed9-4e4e-b32b-4dba8402af4d" />
+   <img width="992" height="626" alt="image" src="https://github.com/user-attachments/assets/2218c68b-7ec7-4f08-a827-0df2b92d9df8" />
+
 
 3. Cada jugador elige su Pokémon activo y puede colocar hasta dos Pokémon en la banca se hace selecionando el pokemon y dandole click en donde lo quieres poner.
 

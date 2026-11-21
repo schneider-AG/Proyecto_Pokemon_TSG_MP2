@@ -704,10 +704,6 @@ public class Tablero extends javax.swing.JFrame {
             mostrarFinPartida();
             return;
         }
-        if (resultadoTurno != null) {
-            JOptionPane.showMessageDialog(this, resultadoTurno);
-            return;
-        }
 
 
 

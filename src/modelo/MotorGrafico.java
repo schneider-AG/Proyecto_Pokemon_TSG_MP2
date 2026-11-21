@@ -203,6 +203,7 @@ public String retirar(Pokemon elegidoBanca) {
         }
         return null;
     }
+    
 
 public Jugador obtenerGanador() {
     if (ganador != null) {
@@ -337,4 +338,5 @@ public Jugador getJugador2() {
 public int getTurno() {
     return turno;
 }
+
 }

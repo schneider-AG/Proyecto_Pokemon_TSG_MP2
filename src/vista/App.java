@@ -1,12 +1,14 @@
 package vista;
 
+import javax.swing.SwingUtilities;
+
+/** Punto de entrada de la aplicación. */
 public class App {
 
+    private App() {
+    }
+
     public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            PantallaInicio inicio = new PantallaInicio();
-            inicio.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-            inicio.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new PantallaInicio().setVisible(true));
     }
 }
